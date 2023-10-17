@@ -155,6 +155,7 @@ cython_debug/
 # NLP Polish team
 code-qa/data/python/datasets/
 code-qa/data/java/datasets/
+medical-qa/data/datasets/
 
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
