@@ -154,10 +154,16 @@ cython_debug/
 
 # NLP Polish team
 generative-qa/data/python/datasets/
+generative-qa/data/python/train/
+generative-qa/data/python/dev/
+generative-qa/data/python/test/
 generative-qa/data/java/datasets/
+generative-qa/data/java/train/
+generative-qa/data/java/dev/
+generative-qa/data/java/test/
 extractive-qa/data/datasets/
 extractive-qa/trained_models/
-extractive-qa/training_checpoints/
+extractive-qa/training_checkpoints/
 
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
