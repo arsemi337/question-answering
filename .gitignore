@@ -153,9 +153,11 @@ dmypy.json
 cython_debug/
 
 # NLP Polish team
-code-qa/data/python/datasets/
-code-qa/data/java/datasets/
-medical-qa/data/datasets/
+generative-qa/data/python/datasets/
+generative-qa/data/java/datasets/
+extractive-qa/data/datasets/
+extractive-qa/trained_models/
+extractive-qa/training_checpoints/
 
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
