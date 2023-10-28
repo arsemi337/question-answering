@@ -1,7 +1,0 @@
-METRICSY QA generative:
-- train, val, test losses & wykresy
-- procent odpowiedzi zamkniętych do pytań zamkniętych i odwrotnie
-- czas szkolenia a skuteczność
-- bleu, meteor, rogue
-- manualne wybiórcze sprawdzanie (merytoryka - sprawdzanie czy wygenerowane zdania mówią to co te referencyjne, gramatyka - samodzielne sprawdzanie vs jakiś model do tego sprawdzający gramatykę albo na około z modelem poprawiającym jeśli by się dało)
-- jakieś propozycje?
