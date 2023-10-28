@@ -4,6 +4,7 @@ Repository for purposes of training and researching NLP models for extractive an
 ## Useful links
 * [Conda environment setup instructions](./documentation/environment_setup.md)
 * [Project structure](./documentation/project_structure.md)
+* [Code formatting](./documentation/code_formatting.md)
 
 ## Mood boost
 
