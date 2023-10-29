@@ -1,5 +1,12 @@
-# question-answering
-Repository for purposes of training NLP models for generative question answering with various techniques such as BERT or GPT.
+# Question answering
+Repository for purposes of training and researching NLP models for extractive and generative question answering.
+
+## Useful links
+* [Conda environment setup instructions](./documentation/environment_setup.md)
+* [Project structure](./documentation/project_structure.md)
+* [Code formatting](./documentation/code_formatting.md)
+
+## Mood boost
 
 <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNG9yOHF0cndyb3V5YTVzNnY2NGQ3OGx5cmgzZG5kdWlhZGwxY2pkMSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/a9VqeofWP3txfA8MCu/giphy-downsized-large.gif"  width="200" height="200">
 

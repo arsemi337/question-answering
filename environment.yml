@@ -1,0 +1,27 @@
+name: question_answering
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - conda-libmamba-solver
+  - jupyter
+  - conda
+  - ipython
+  - ipykernel
+  - numpy
+  - matplotlib
+  - pandas
+  - pip
+  - scikit-learn
+  - pyprojroot
+  - datasets
+  - tokenizers
+  - transformers
+  - cudatoolkit=11.2
+  - cudnn=8.1.0
+  - black
+  - black-jupyter
+  - isort
+  - pip:
+      - tensorflow<2.11 # Tensorflow 2.10 is the last one supporting GPU on Windows native
+      - keras
