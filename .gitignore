@@ -164,6 +164,9 @@ generative-qa/data/java/test/
 extractive-qa/data/datasets/
 extractive-qa/trained_models/
 extractive-qa/training_checkpoints/
+*/tf-models
+*/hub-models
+*/training-checkpoints
 
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
