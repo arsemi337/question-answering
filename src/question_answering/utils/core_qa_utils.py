@@ -1,5 +1,6 @@
 from transformers import DataCollator
-from pathlib import Path
+import os
+import matplotlib.pyplot as plt
 from datasets import Dataset
 import pandas as pd
 import shutil
@@ -70,3 +71,26 @@ def get_best_model_from_checkpoints(
 def _create_dirs_if_not_exists(directory: Path):
     if not directory.is_dir():
         directory.mkdir()
+
+def plot_and_save_fig_from_history(
+    history,
+    attributes,
+    title,
+    y_label,
+    x_label,
+    legend_descriptors,
+    figure_dir_path,
+    figure_filename,
+):
+    for attribute in attributes:
+        plt.plot(history.history[attribute])
+    plt.title(title)
+    plt.ylabel(y_label)
+    plt.xlabel(x_label)
+    plt.legend(legend_descriptors, loc="upper left")
+
+    figure_dir = os.path.join(os.curdir, figure_dir_path)
+    _create_dirs_if_not_exists(figure_dir_path)
+
+    plt.savefig(os.path.join(figure_dir, figure_filename))
+    plt.show()
