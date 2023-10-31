@@ -57,7 +57,9 @@ def plot_sentence_lengths_histogram(
         if min_threshold <= int(x.split("-")[0])
         and int(x.split("-")[1]) <= max_threshold
     }
-    sorted_counter = sorted(filtered_counter.items(), key=lambda pair: pair[0], reverse=reverse_sort)
+    sorted_counter = sorted(
+        filtered_counter.items(), key=lambda pair: pair[0], reverse=reverse_sort
+    )
     labels, values = zip(*sorted_counter)
 
     plt.gca().yaxis.set_major_locator(MaxNLocator(integer=True))
