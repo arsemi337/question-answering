@@ -154,6 +154,7 @@ cython_debug/
 
 # NLP Polish team
 generative-qa/data/datasets/
+generative-qa/data/codeqa/
 extractive-qa/data/datasets/
 */tf-models
 */hub-models
