@@ -1,7 +1,3 @@
-import matplotlib.pyplot as plt
-from pathlib import Path
-
-import matplotlib.ticker
 from datasets import Dataset
 import pandas as pd
 import shutil
