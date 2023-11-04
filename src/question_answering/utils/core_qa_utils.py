@@ -6,6 +6,7 @@ import pandas as pd
 import shutil
 import numpy as np
 import tensorflow as tf
+from pathlib import Path
 
 from question_answering.constants import constants
 from question_answering.paths import extractive_qa_paths
