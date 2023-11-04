@@ -1,3 +1,4 @@
+import pandas as pd
 import tensorflow as tf
 from transformers import TFAutoModelForQuestionAnswering
 from datasets import Dataset
@@ -110,3 +111,11 @@ def calculate_squad_exact_match(test_dataset: Dataset, predicted):
         predictions=predicted_answers, references=theoretical_answers_squad
     )
     return results
+
+
+# def incorrect_outputs(
+#         predicted_answers: list[str],
+#         correct_answers: list[str],
+#         number_of_incorrect_predictions: int = 10
+# ) -> pd.DataFrame:
+#     Zwracanie DataFrame z pytaniami, kontekstem, poprawną odpowiedzią, przewidzianą odpowiedzią i tym czy poprawna.
