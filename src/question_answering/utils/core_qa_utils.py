@@ -1,6 +1,3 @@
-from pathlib import Path
-
-import matplotlib.ticker
 from datasets import Dataset
 import pandas as pd
 import shutil
@@ -9,6 +6,7 @@ import tensorflow as tf
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
 from collections import Counter
+from pathlib import Path
 
 from question_answering.constants import constants
 from question_answering.paths import extractive_qa_paths
@@ -113,6 +111,29 @@ def get_best_model_from_checkpoints(
         shutil.rmtree(best_model_checkpoints_path)
 
     return best_model
+
+
+def plot_and_save_fig_from_history(
+    history: tf.keras.callbacks.History,
+    attributes: list[str],
+    title: str,
+    y_label: str,
+    x_label: str,
+    legend_descriptors: list[str],
+    figure_dir_path: Path,
+    figure_filename: str,
+):
+    for attribute in attributes:
+        plt.plot(history.history[attribute])
+    plt.title(title)
+    plt.ylabel(y_label)
+    plt.xlabel(x_label)
+    plt.legend(legend_descriptors, loc="upper left")
+
+    _create_dirs_if_not_exists(figure_dir_path)
+
+    plt.savefig(figure_dir_path / figure_filename)
+    plt.show()
 
 
 def _create_dirs_if_not_exists(directory: Path):
