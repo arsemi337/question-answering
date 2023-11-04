@@ -1,10 +1,14 @@
-from transformers import DataCollator
 from pathlib import Path
+
+import matplotlib.ticker
 from datasets import Dataset
 import pandas as pd
 import shutil
 import numpy as np
 import tensorflow as tf
+import matplotlib.pyplot as plt
+from matplotlib.ticker import MaxNLocator
+from collections import Counter
 
 from question_answering.constants import constants
 from question_answering.paths import extractive_qa_paths
@@ -24,6 +28,50 @@ def convert_dataframes_to_datasets(dataframes: list[pd.DataFrame]):
             for dataframe in dataframes
         ]
     )
+
+
+def plot_sentence_lengths_histogram(
+    sentences: list[str],
+    figure_path: Path,
+    figure_title: str,
+    divider: int,
+    min_threshold: int,
+    max_threshold: int,
+    reverse_sort: bool = False,
+    x_label: str = "Words count per sentence",
+    y_label: str = "Number of sentences",
+):
+    word_count_groups = []
+    for sentence in sentences:
+        word_count = len(sentence.split())
+        num_word_count_group = int(word_count / divider) + 1
+        lower_group_boundary = divider * num_word_count_group - divider
+        upper_group_boundary = divider * num_word_count_group - 1
+        word_count_group = f"{lower_group_boundary}-{upper_group_boundary}"
+        word_count_groups.append(word_count_group)
+
+    counter = Counter(word_count_groups)
+    filtered_counter = {
+        x: count
+        for x, count in counter.items()
+        if min_threshold <= int(x.split("-")[0])
+        and int(x.split("-")[1]) <= max_threshold
+    }
+    sorted_counter = sorted(
+        filtered_counter.items(), key=lambda pair: pair[0], reverse=reverse_sort
+    )
+    labels, values = zip(*sorted_counter)
+
+    plt.gca().yaxis.set_major_locator(MaxNLocator(integer=True))
+    plt.bar(labels, values, color="dimgray")
+    plt.title(figure_title)
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
+
+    _create_dirs_if_not_exists(figure_path.parent)
+
+    plt.savefig(figure_path)
+    plt.show()
 
 
 def convert_to_tf_dataset(
@@ -69,4 +117,4 @@ def get_best_model_from_checkpoints(
 
 def _create_dirs_if_not_exists(directory: Path):
     if not directory.is_dir():
-        directory.mkdir()
+        directory.mkdir(parents=True)
