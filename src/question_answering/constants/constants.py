@@ -1,2 +1,2 @@
-default_model_version = "1"
+figures_dir_name = "figures"
 checkpoint_filename_template = "cp-{epoch:02d}.ckpt"

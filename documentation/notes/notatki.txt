@@ -19,8 +19,10 @@ Oznaczenia modeli:
 bs - batch size
 
 Przy każdym trenowanym modelu ekstraktywnym powinny być zapisane:
-wykresy lossów, wykresy accuracy, precision, recall, f1, exact_match, czas szkolenia, i które GPU. Albo trzymanie ich właśnie w notebookach ewaluacyjnych?
+wykresy lossów, wykresy accuracy, precision, recall, f1, best epoch, number of attempted epochs, exact_match, czas szkolenia, i które GPU. Albo trzymanie ich właśnie w notebookach ewaluacyjnych?
 
 Wydzielanie plików treningowych i ewaluacyjnych
 
 Każde szkolenie to nowy notebook? Jeśli tak to jakie nazewnictwo?
+
+Są możliwe przypadki, że start_position będzie za end_position? Chyba teoretycznie jest to możliwe?

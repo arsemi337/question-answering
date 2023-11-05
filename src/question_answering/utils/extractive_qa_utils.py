@@ -1,4 +1,3 @@
-import pandas as pd
 import tensorflow as tf
 from transformers import TFAutoModelForQuestionAnswering
 from datasets import Dataset
@@ -60,23 +59,43 @@ def extract_answer_tokens(tokenized_dataset_row: dict):
 def decode_answer_tokens(tokenized_dataset_row: dict, tokenizer):
     tokens = tokenized_dataset_row["answer_tokens"]
     answer = tokenizer.decode(tokens)
-    return answer
+    tokenized_dataset_row["predicted_answer_text"] = answer
+    return tokenized_dataset_row
 
 
-def calculate_pure_exact_match(test_dataset: Dataset, predicted):
+def mark_correct_predictions(tokenized_dataset_row: dict):
+    actual_result = tokenized_dataset_row["answer_text"]
+    predicted_result = tokenized_dataset_row["predicted_answer_text"]
+
+    if actual_result == predicted_result:
+        tokenized_dataset_row["correctly_predicted"] = 1
+    else:
+        tokenized_dataset_row["correctly_predicted"] = 0
+
+    if actual_result.lower() == predicted_result.lower():
+        tokenized_dataset_row["correctly_predicted_lowercase"] = 1
+    else:
+        tokenized_dataset_row["correctly_predicted_lowercase"] = 0
+
+    # Tutaj coś z interpunkcją?
+
+    return tokenized_dataset_row
+
+
+def calculate_pure_exact_match(actual: list[str], predicted: list[str]):
     evaluator = load("exact_match")
 
     exact_match_original = evaluator.compute(
-        predictions=test_dataset["answer_text"], references=predicted["answer_text"]
+        predictions=actual, references=predicted
     )
     exact_match_lowercase = evaluator.compute(
-        predictions=test_dataset["answer_text"],
-        references=predicted["answer_text"],
+        predictions=actual,
+        references=predicted,
         ignore_case=True,
     )
     exact_match_lowercase_no_punctuation = evaluator.compute(
-        predictions=test_dataset["answer_text"],
-        references=predicted["answer_text"],
+        predictions=actual,
+        references=predicted,
         ignore_case=True,
         ignore_punctuation=True,
     )
@@ -88,34 +107,31 @@ def calculate_pure_exact_match(test_dataset: Dataset, predicted):
     )
 
 
-def calculate_squad_exact_match(test_dataset: Dataset, predicted):
+def calculate_squad_exact_match(model_predictions: Dataset):
     evaluator = load("squad")
 
-    theoretical_answers_squad = [
+    actual_answers = [
         {
             "id": row["id"],
             "answers": {
                 "text": [row["answer_text"]],
-                "answer_start": [row["answer_start"]],
-            },
+                "answer_start": [row["answer_start"]]
+            }
         }
-        for row in test_dataset
+        for row in model_predictions
     ]
-    temp_dataset = test_dataset.select_columns(["id", "answer_text"])
-    temp_dataset = temp_dataset.add_column("predicted_answers", predicted)
     predicted_answers = [
-        {"id": row["id"], "prediction_text": row["predicted_answers"]["answer_text"]}
-        for row in temp_dataset
+        {
+            "id": row["id"],
+            "prediction_text": row["predicted_answer_text"]
+        }
+        for row in model_predictions
     ]
+
     results = evaluator.compute(
-        predictions=predicted_answers, references=theoretical_answers_squad
+        predictions=predicted_answers, references=actual_answers
     )
     return results
 
 
-# def incorrect_outputs(
-#         predicted_answers: list[str],
-#         correct_answers: list[str],
-#         number_of_incorrect_predictions: int = 10
-# ) -> pd.DataFrame:
-#     Zwracanie DataFrame z pytaniami, kontekstem, poprawną odpowiedzią, przewidzianą odpowiedzią i tym czy poprawna.
+
