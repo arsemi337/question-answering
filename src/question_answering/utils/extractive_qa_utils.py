@@ -85,9 +85,7 @@ def mark_correct_predictions(tokenized_dataset_row: dict):
 def calculate_pure_exact_match(actual: list[str], predicted: list[str]):
     evaluator = load("exact_match")
 
-    exact_match_original = evaluator.compute(
-        predictions=actual, references=predicted
-    )
+    exact_match_original = evaluator.compute(predictions=actual, references=predicted)
     exact_match_lowercase = evaluator.compute(
         predictions=actual,
         references=predicted,
@@ -115,16 +113,13 @@ def calculate_squad_exact_match(model_predictions: Dataset):
             "id": row["id"],
             "answers": {
                 "text": [row["answer_text"]],
-                "answer_start": [row["answer_start"]]
-            }
+                "answer_start": [row["answer_start"]],
+            },
         }
         for row in model_predictions
     ]
     predicted_answers = [
-        {
-            "id": row["id"],
-            "prediction_text": row["predicted_answer_text"]
-        }
+        {"id": row["id"], "prediction_text": row["predicted_answer_text"]}
         for row in model_predictions
     ]
 
@@ -132,6 +127,3 @@ def calculate_squad_exact_match(model_predictions: Dataset):
         predictions=predicted_answers, references=actual_answers
     )
     return results
-
-
-

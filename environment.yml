@@ -26,3 +26,4 @@ dependencies:
   - pip:
       - tensorflow<2.11 # Tensorflow 2.10 is the last one supporting GPU on Windows native
       - keras
+      - ipynbname

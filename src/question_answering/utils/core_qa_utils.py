@@ -30,15 +30,15 @@ def convert_dataframes_to_datasets(dataframes: list[pd.DataFrame]):
 
 
 def plot_sentence_lengths_histogram(
-        sentences: list[str],
-        figure_path: Path,
-        figure_title: str,
-        divider: int,
-        min_threshold: int,
-        max_threshold: int,
-        reverse_sort: bool = False,
-        x_label: str = "Words count per sentence",
-        y_label: str = "Number of sentences",
+    sentences: list[str],
+    figure_path: Path,
+    figure_title: str,
+    divider: int,
+    min_threshold: int,
+    max_threshold: int,
+    reverse_sort: bool = False,
+    x_label: str = "Words count per sentence",
+    y_label: str = "Number of sentences",
 ):
     word_count_groups = []
     for sentence in sentences:
@@ -54,7 +54,7 @@ def plot_sentence_lengths_histogram(
         x: count
         for x, count in counter.items()
         if min_threshold <= int(x.split("-")[0])
-           and int(x.split("-")[1]) <= max_threshold
+        and int(x.split("-")[1]) <= max_threshold
     }
     sorted_counter = sorted(
         filtered_counter.items(), key=lambda pair: pair[0], reverse=reverse_sort
@@ -74,12 +74,12 @@ def plot_sentence_lengths_histogram(
 
 
 def convert_to_tf_dataset(
-        hf_dataset: Dataset,
-        columns: list[str],
-        label_cols: list[str],
-        collator,
-        batch_size: int,
-        shuffle: bool = False,
+    hf_dataset: Dataset,
+    columns: list[str],
+    label_cols: list[str],
+    collator,
+    batch_size: int,
+    shuffle: bool = False,
 ):
     return hf_dataset.to_tf_dataset(
         columns=columns,
@@ -91,19 +91,19 @@ def convert_to_tf_dataset(
 
 
 def get_best_model_from_checkpoints(
-        trained_model: tf.keras.Model,
-        history: tf.keras.callbacks.History,
-        model_name: str,
-        metric: str = "val_loss",
-        remove_checkpoints: bool = True,
+    trained_model: tf.keras.Model,
+    history: tf.keras.callbacks.History,
+    model_name: str,
+    metric: str = "val_loss",
+    remove_checkpoints: bool = True,
 ):
-    best_model_index = np.argmin(history.history[metric]) + 1
+    best_epoch = int(np.argmin(history.history[metric]) + 1)
     best_model_checkpoints_path = (
-            extractive_qa_paths.training_checkpoints_dir / model_name
+        extractive_qa_paths.training_checkpoints_dir / model_name
     )
     best_model_weights_path = (
-            best_model_checkpoints_path
-            / constants.checkpoint_filename_template.format(epoch=best_model_index)
+        best_model_checkpoints_path
+        / constants.checkpoint_filename_template.format(epoch=best_epoch)
     )
     best_model = trained_model
     best_model.load_weights(best_model_weights_path)
@@ -111,18 +111,18 @@ def get_best_model_from_checkpoints(
     if remove_checkpoints:
         shutil.rmtree(best_model_checkpoints_path)
 
-    return best_model
+    return best_model, best_epoch
 
 
 def plot_and_save_fig_from_history(
-        history: tf.keras.callbacks.History,
-        attributes: list[str],
-        title: str,
-        y_label: str,
-        x_label: str,
-        legend_descriptors: list[str],
-        figure_dir_path: Path,
-        figure_filename: str,
+    history: tf.keras.callbacks.History,
+    attributes: list[str],
+    title: str,
+    y_label: str,
+    x_label: str,
+    legend_descriptors: list[str],
+    figure_dir_path: Path,
+    figure_filename: str,
 ):
     for attribute in attributes:
         plt.plot(history.history[attribute])
@@ -146,9 +146,16 @@ def save_dict_as_json(dictionary: dict, dir_path: Path, filename: str):
 
 
 def read_json_as_dict(path: Path) -> dict:
-    with open(path, 'r') as fp:
+    with open(path, "r") as fp:
         data = json.load(fp)
         return data
+
+
+def get_gpu_name():
+    gpu_devices = tf.config.list_physical_devices("GPU")
+    if gpu_devices:
+        details = tf.config.experimental.get_device_details(gpu_devices[0])
+        return details.get("device_name", "Unknown GPU")
 
 
 def _create_dirs_if_not_exists(directory: Path):

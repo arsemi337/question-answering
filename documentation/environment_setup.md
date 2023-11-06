@@ -22,7 +22,7 @@ To ensure that the environment's kernels are available to jupyter it is necessar
 ## Environment updates
 In order to update the environment add an appropriate dependency in the [environment.yml file](./../environment.yml) and run this command in the project's root folder:
 
-`> conda env update -f environment.yml` 
+`> conda env update --name question_answering -f environment.yml` 
 
 ## Conda optimization
 With the classic conda dependency solver the time needed to solve the dependencies for this project may take a very long time. In order to reduce this time to a few minutes one, one can install ***libmamba-solver***, which is an optimized version of the classic conda solver.
