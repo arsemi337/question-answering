@@ -1,0 +1,18 @@
+METRICSY QA generative:
+- train, val, test losses & wykresy
+- procent odpowiedzi zamkniętych do pytań zamkniętych i odwrotnie
+- czas szkolenia a skuteczność
+- bleu, meteor, rogue
+- manualne wybiórcze sprawdzanie (merytoryka - sprawdzanie czy wygenerowane zdania mówią to co te referencyjne, gramatyka - samodzielne sprawdzanie vs jakiś model do tego sprawdzający gramatykę albo na około z modelem poprawiającym jeśli by się dało)
+- jakieś propozycje?
+
+METRICSY QA extractive:
+- exact match (wykresy?)
+- exact match z tolerancją dla indeksu początkowego i końcowego (artur opisze)
+- f1 score, precision, recall (conf matrix)
+- czas szkolenia a skuteczność
+- train, val, test losses & wykresy
++ dodatkowe wykresy/analizy na podstawie tego co zauważymy w trakcie (np. exact matche w zależności od długości pytań)
++ jakieś propozycje?
+
+Są możliwe przypadki, że start_position będzie za end_position? Chyba teoretycznie jest to możliwe?

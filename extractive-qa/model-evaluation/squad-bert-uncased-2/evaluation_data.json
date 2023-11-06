@@ -1,0 +1,74 @@
+{
+    "test_set": {
+        "end_logits_accuracy": 0.7355002760887146,
+        "end_logits_loss": 0.9322877526283264,
+        "end_positions": {
+            "f1": 0.7355002748763056,
+            "precision": 0.7355002748763056,
+            "recall": 0.7355002748763056
+        },
+        "exact_match": {
+            "case_insensitive": 0.8523914238592634,
+            "case_insensitive_and_no_punctuation": 0.8523914238592634,
+            "case_sensitive": 0.4169186366135239,
+            "squad": 88.3177570093458,
+            "squad_f1": 92.50495563005454
+        },
+        "loss": 1.9613661766052246,
+        "start_logits_accuracy": 0.6979109644889832,
+        "start_logits_loss": 1.0290844440460205,
+        "start_positions": {
+            "f1": 0.6979109400769654,
+            "precision": 0.6979109400769654,
+            "recall": 0.6979109400769654
+        }
+    },
+    "training": {
+        "attempted_epochs": 2,
+        "best_epoch": 1,
+        "gpu": "NVIDIA GeForce RTX 3070 Ti",
+        "metrics": {
+            "end_logits_accuracy": [
+                0.6638514399528503,
+                0.8001000285148621
+            ],
+            "end_logits_loss": [
+                1.2130796909332275,
+                0.6560055017471313
+            ],
+            "loss": [
+                2.529527187347412,
+                1.3938426971435547
+            ],
+            "start_logits_accuracy": [
+                0.6248013377189636,
+                0.7614325284957886
+            ],
+            "start_logits_loss": [
+                1.3164432048797607,
+                0.737837016582489
+            ],
+            "val_end_logits_accuracy": [
+                0.7384889721870422,
+                0.7518012523651123
+            ],
+            "val_end_logits_loss": [
+                0.9222739338874817,
+                0.9199003577232361
+            ],
+            "val_loss": [
+                1.9327178001403809,
+                1.938633680343628
+            ],
+            "val_start_logits_accuracy": [
+                0.7042475938796997,
+                0.7124819755554199
+            ],
+            "val_start_logits_loss": [
+                1.0104413032531738,
+                1.0187355279922485
+            ]
+        },
+        "training_time": 5503.349898300003
+    }
+}

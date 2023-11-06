@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
 from collections import Counter
 from pathlib import Path
+import json
 
 from question_answering.constants import constants
 from question_answering.paths import extractive_qa_paths
@@ -96,13 +97,13 @@ def get_best_model_from_checkpoints(
     metric: str = "val_loss",
     remove_checkpoints: bool = True,
 ):
-    best_model_index = np.argmin(history.history[metric]) + 1
+    best_epoch = int(np.argmin(history.history[metric]) + 1)
     best_model_checkpoints_path = (
         extractive_qa_paths.training_checkpoints_dir / model_name
     )
     best_model_weights_path = (
         best_model_checkpoints_path
-        / constants.checkpoint_filename_template.format(epoch=best_model_index)
+        / constants.checkpoint_filename_template.format(epoch=best_epoch)
     )
     best_model = trained_model
     best_model.load_weights(best_model_weights_path)
@@ -110,7 +111,7 @@ def get_best_model_from_checkpoints(
     if remove_checkpoints:
         shutil.rmtree(best_model_checkpoints_path)
 
-    return best_model
+    return best_model, best_epoch
 
 
 def plot_and_save_fig_from_history(
@@ -134,6 +135,27 @@ def plot_and_save_fig_from_history(
 
     plt.savefig(figure_dir_path / figure_filename)
     plt.show()
+
+
+def save_dict_as_json(dictionary: dict, dir_path: Path, filename: str):
+    if not dir_path.exists() or not dir_path.is_dir():
+        dir_path.mkdir(parents=True)
+
+    with open(dir_path / filename, "w") as fp:
+        json.dump(dictionary, fp, sort_keys=True, indent=4)
+
+
+def read_json_as_dict(path: Path) -> dict:
+    with open(path, "r") as fp:
+        data = json.load(fp)
+        return data
+
+
+def get_gpu_name():
+    gpu_devices = tf.config.list_physical_devices("GPU")
+    if gpu_devices:
+        details = tf.config.experimental.get_device_details(gpu_devices[0])
+        return details.get("device_name", "Unknown GPU")
 
 
 def _create_dirs_if_not_exists(directory: Path):

@@ -1,8 +1,0 @@
-METRICSY QA extractive:
-- exact match (wykresy?)
-- exact match z tolerancją dla indeksu początkowego i końcowego (artur opisze)
-- f1 score, precision, recall (conf matrix)
-- czas szkolenia a skuteczność
-- train, val, test losses & wykresy
-+ dodatkowe wykresy/analizy na podstawie tego co zauważymy w trakcie (np. exact matche w zależności od długości pytań)
-+ jakieś propozycje?
