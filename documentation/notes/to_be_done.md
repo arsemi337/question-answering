@@ -7,4 +7,7 @@
 - T.B.D
 
 ## Low priority
-- Train squad_bert-uncased_1 again
+- Train squad_bert-uncased_1 again and adjust notebooks contents to squad_bert-uncased_2
+
+## Optional
+- Training models with varying stride and comparing their perfomance?
