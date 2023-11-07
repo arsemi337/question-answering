@@ -14,5 +14,3 @@ METRICSY QA extractive:
 - train, val, test losses & wykresy
 + dodatkowe wykresy/analizy na podstawie tego co zauważymy w trakcie (np. exact matche w zależności od długości pytań)
 + jakieś propozycje?
-
-Są możliwe przypadki, że start_position będzie za end_position? Chyba teoretycznie jest to możliwe?
