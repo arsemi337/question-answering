@@ -57,7 +57,7 @@ def plot_sentence_lengths_histogram(
         and int(x.split("-")[1]) <= max_threshold
     }
     sorted_counter = sorted(
-        filtered_counter.items(), key=lambda pair: pair[0], reverse=reverse_sort
+        filtered_counter.items(), key=lambda pair: int(pair[0].split("-")[0]), reverse=reverse_sort
     )
     labels, values = zip(*sorted_counter)
 
