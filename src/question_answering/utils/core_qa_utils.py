@@ -179,12 +179,12 @@ def convert_to_tf_dataset(
 
 def get_best_model_from_checkpoints(
     trained_model: tf.keras.Model,
-    history: tf.keras.callbacks.History,
+    history: dict,
     model_name: str,
     metric: str = "val_loss",
     remove_checkpoints: bool = True,
 ):
-    best_epoch = int(np.argmin(history.history[metric]) + 1)
+    best_epoch = int(np.argmin(history[metric]) + 1)
     best_model_checkpoints_path = (
         extractive_qa_paths.training_checkpoints_dir / model_name
     )
@@ -202,7 +202,7 @@ def get_best_model_from_checkpoints(
 
 
 def plot_and_save_fig_from_history(
-    history: tf.keras.callbacks.History,
+    history: dict,
     attributes: list[str],
     title: str,
     y_label: str,
@@ -212,7 +212,7 @@ def plot_and_save_fig_from_history(
     figure_filename: str,
 ):
     for attribute in attributes:
-        plt.plot(history.history[attribute])
+        plt.plot(history[attribute])
     plt.title(title)
     plt.ylabel(y_label)
     plt.xlabel(x_label)
