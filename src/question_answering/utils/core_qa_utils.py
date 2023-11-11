@@ -1,13 +1,14 @@
-from datasets import Dataset
-import pandas as pd
+import json
 import shutil
-import numpy as np
-import tensorflow as tf
-import matplotlib.pyplot as plt
-from matplotlib.ticker import MaxNLocator, PercentFormatter
 from collections import Counter
 from pathlib import Path
-import json
+
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import tensorflow as tf
+from datasets import Dataset
+from matplotlib.ticker import MaxNLocator, PercentFormatter
 
 from question_answering.constants import constants
 from question_answering.paths import extractive_qa_paths

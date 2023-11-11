@@ -1,9 +1,9 @@
+import numpy as np
+import sklearn.metrics as skmetrics
 import tensorflow as tf
-from transformers import TFAutoModelForQuestionAnswering
 from datasets import Dataset
 from evaluate import load
-import sklearn.metrics as skmetrics
-import numpy as np
+from transformers import TFAutoModelForQuestionAnswering
 
 from question_answering.paths import extractive_qa_paths
 
