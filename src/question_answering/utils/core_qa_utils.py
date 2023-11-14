@@ -10,7 +10,7 @@ from pathlib import Path
 import json
 
 from question_answering.constants import constants
-from question_answering.paths import extractive_qa_paths
+from question_answering.paths import extractive_qa_paths, generative_qa_paths
 
 
 def load_train_val_test_datasets(dataset_path: Path):
@@ -89,6 +89,20 @@ def convert_to_tf_dataset(
         shuffle=shuffle,
     )
 
+def prepare_tf_dataset(
+    model,
+    hf_dataset: Dataset,
+    collator,
+    batch_size: int,
+    shuffle: bool = False,
+):
+    return model.prepare_tf_dataset(
+        dataset=hf_dataset,
+        collate_fn=collator,
+        shuffle=shuffle,
+        batch_size=batch_size,
+    )
+
 
 def get_best_model_from_checkpoints(
     trained_model: tf.keras.Model,
@@ -96,11 +110,17 @@ def get_best_model_from_checkpoints(
     model_name: str,
     metric: str = "val_loss",
     remove_checkpoints: bool = True,
+    model_type: str = "extractive"
 ):
     best_epoch = int(np.argmin(history.history[metric]) + 1)
-    best_model_checkpoints_path = (
-        extractive_qa_paths.training_checkpoints_dir / model_name
-    )
+    if model_type == "extractive":
+        best_model_checkpoints_path = (
+            extractive_qa_paths.training_checkpoints_dir / model_name
+        )
+    else:
+        best_model_checkpoints_path = (
+            generative_qa_paths.training_checkpoints_dir / model_name
+        )
     best_model_weights_path = (
         best_model_checkpoints_path
         / constants.checkpoint_filename_template.format(epoch=best_epoch)

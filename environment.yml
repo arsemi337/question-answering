@@ -23,6 +23,8 @@ dependencies:
   - black-jupyter
   - isort
   - evaluate
+  - pytorch
+  - sacrebleu
   - pip:
       - tensorflow<2.11 # Tensorflow 2.10 is the last one supporting GPU on Windows native
       - keras
