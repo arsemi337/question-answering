@@ -9,20 +9,20 @@ from question_answering.paths import extractive_qa_paths
 
 
 def save_model(
-        model: tf.keras.Model, model_name: str, weights_name: str = "model_weights"
+    model: tf.keras.Model, model_name: str, weights_name: str = "model_weights"
 ):
     model.save_weights(extractive_qa_paths.saved_models_dir / model_name / weights_name)
 
 
 def load_weights_into_model(
-        model: tf.keras.Model, model_name: str, weights_name: str = "model_weights"
+    model: tf.keras.Model, model_name: str, weights_name: str = "model_weights"
 ) -> tf.keras.Model:
     model.load_weights(extractive_qa_paths.saved_models_dir / model_name / weights_name)
     return model
 
 
 def load_model(
-        model_checkpoint: str, model_name: str, weights_name: str = "model_weights"
+    model_checkpoint: str, model_name: str, weights_name: str = "model_weights"
 ) -> tf.keras.Model:
     model = TFAutoModelForQuestionAnswering.from_pretrained(model_checkpoint)
     model.load_weights(extractive_qa_paths.saved_models_dir / model_name / weights_name)
@@ -30,7 +30,7 @@ def load_model(
 
 
 def get_classification_evaluation_metrics(
-        class_actual: list, class_preds: list, average: str = "binary"
+    class_actual: list, class_preds: list, average: str = "binary"
 ):
     precision = skmetrics.precision_score(class_actual, class_preds, average=average)
     recall = skmetrics.recall_score(class_actual, class_preds, average=average)
@@ -51,11 +51,11 @@ def extract_answer_tokens(tokenized_dataset_row: dict):
     start = tokenized_dataset_row["start_positions"]
     end = tokenized_dataset_row["end_positions"]
     if start == 0 and end == 0:
-        tokenized_dataset_row['answer_tokens'] = None
+        tokenized_dataset_row["answer_tokens"] = None
     else:
         tokenized_dataset_row["answer_tokens"] = tokenized_dataset_row["input_ids"][
-                                                 start: end + 1
-                                                 ]
+            start : end + 1
+        ]
     return tokenized_dataset_row
 
 
