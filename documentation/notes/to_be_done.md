@@ -1,13 +1,11 @@
 # Things to be done
 
 ## High priority
-- Start after end!!!
-- Evaluation of stride model on medical dataset
-- Analysis of medical dataset
-- Hyperparameter tuning of extractive qa models
+- Evaluation of stride model on medical dataset (smaller text spans)
+- Analysis of medical dataset (more)
 
 ## Medium priority
-- T.B.D
+- Hyperparameter tuning of extractive qa models
 
 ## Low priority
 - Train squad_bert-uncased_1 again
