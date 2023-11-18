@@ -8,14 +8,14 @@
             "recall": 0.7266751626534308
         },
         "exact_match": {
-            "case_insensitive": 0.8517540295272924,
-            "case_insensitive_and_no_punctuation": 0.8517540295272924,
-            "case_sensitive": 0.414939726398483,
-            "squad": 88.27712312068265,
-            "squad_f1": 92.49072052141038
+            "case_insensitive": 0.5199864268747879,
+            "case_insensitive_and_no_punctuation": 0.5199864268747879,
+            "case_sensitive": 0.24038004750593825,
+            "squad": 58.37122497455039,
+            "squad_f1": 72.900502815215
         },
-        "general_accuracy": 0.42055134482527334,
-        "general_lowercase_accuracy": 0.8531759339995976,
+        "general_accuracy": 0.24428197732913007,
+        "general_lowercase_accuracy": 0.5206251257629619,
         "loss": 2.0713934898376465,
         "start_logits_accuracy": 0.6871688365936279,
         "start_logits_loss": 1.0757664442062378,

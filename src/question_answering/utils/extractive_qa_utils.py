@@ -9,20 +9,20 @@ from question_answering.paths import extractive_qa_paths
 
 
 def save_model(
-    model: tf.keras.Model, model_name: str, weights_name: str = "model_weights"
+        model: tf.keras.Model, model_name: str, weights_name: str = "model_weights"
 ):
     model.save_weights(extractive_qa_paths.saved_models_dir / model_name / weights_name)
 
 
 def load_weights_into_model(
-    model: tf.keras.Model, model_name: str, weights_name: str = "model_weights"
+        model: tf.keras.Model, model_name: str, weights_name: str = "model_weights"
 ) -> tf.keras.Model:
     model.load_weights(extractive_qa_paths.saved_models_dir / model_name / weights_name)
     return model
 
 
 def load_model(
-    model_checkpoint: str, model_name: str, weights_name: str = "model_weights"
+        model_checkpoint: str, model_name: str, weights_name: str = "model_weights"
 ) -> tf.keras.Model:
     model = TFAutoModelForQuestionAnswering.from_pretrained(model_checkpoint)
     model.load_weights(extractive_qa_paths.saved_models_dir / model_name / weights_name)
@@ -30,7 +30,7 @@ def load_model(
 
 
 def get_classification_evaluation_metrics(
-    class_actual: list, class_preds: list, average: str = "binary"
+        class_actual: list, class_preds: list, average: str = "binary"
 ):
     precision = skmetrics.precision_score(class_actual, class_preds, average=average)
     recall = skmetrics.recall_score(class_actual, class_preds, average=average)
@@ -47,25 +47,23 @@ def get_class_preds(predictions, output_key="start_logits", return_classes=True)
         return probabilities.numpy()
 
 
-def extract_answer_tokens(tokenized_dataset_row: dict):
-    start = tokenized_dataset_row["start_positions"]
-    end = tokenized_dataset_row["end_positions"]
-    if start == 0 and end == 0:
-        tokenized_dataset_row["answer_tokens"] = None
+def extract_prediction_tokens(tokenized_dataset_row: dict, start_pred: int, end_pred: int):
+    if start_pred == 0 and end_pred == 0:
+        tokenized_dataset_row["prediction_tokens"] = None
     else:
-        tokenized_dataset_row["answer_tokens"] = tokenized_dataset_row["input_ids"][
-            start : end + 1
+        tokenized_dataset_row["prediction_tokens"] = tokenized_dataset_row["input_ids"][
+            start_pred: end_pred + 1
         ]
     return tokenized_dataset_row
 
 
 def decode_answer_tokens(tokenized_dataset_row: dict, tokenizer):
-    tokens = tokenized_dataset_row["answer_tokens"]
-    if tokens is not None:
-        answer = tokenizer.decode(tokens)
+    prediction_tokens = tokenized_dataset_row["prediction_tokens"]
+    if prediction_tokens is not None:
+        prediction = tokenizer.decode(prediction_tokens)
     else:
-        answer = None
-    tokenized_dataset_row["predicted_answer_text"] = answer
+        prediction = None
+    tokenized_dataset_row["predicted_answer_text"] = prediction
     return tokenized_dataset_row
 
 
