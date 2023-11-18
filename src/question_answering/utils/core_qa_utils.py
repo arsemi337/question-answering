@@ -217,9 +217,12 @@ def plot_and_save_fig_from_history(
 ):
     for attribute in attributes:
         plt.plot(history[attribute])
+
+    plt.gca().yaxis.set_major_locator(MaxNLocator(integer=True))
     plt.title(title)
     plt.ylabel(y_label)
     plt.xlabel(x_label)
+    plt.gca().xaxis.set_major_locator(MaxNLocator(integer=True))
     plt.legend(legend_descriptors, loc="upper left")
 
     _create_dirs_if_not_exists(figure_dir_path)
