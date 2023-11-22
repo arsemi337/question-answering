@@ -14,11 +14,17 @@ from question_answering.constants import constants
 from question_answering.paths import extractive_qa_paths
 
 
-def load_train_val_test_datasets(dataset_path: Path):
-    train = pd.read_csv(dataset_path / "train.csv").dropna()
-    val = pd.read_csv(dataset_path / "val.csv").dropna()
-    test = pd.read_csv(dataset_path / "test.csv").dropna()
-    return train, val, test
+def load_datasets_from_csv(dataset_path: Path, filenames=None):
+    if filenames is None:
+        filenames = ["train.csv", "val.csv", "test.csv"]
+
+    csvs = [pd.read_csv(dataset_path / filename).dropna() for filename in filenames]
+    return csvs
+
+
+def load_datasets_from_json(dataset_path: Path, filenames: list[str]):
+    jsons = [pd.read_json(dataset_path / filename).dropna() for filename in filenames]
+    return jsons
 
 
 def convert_dataframes_to_datasets(dataframes: list[pd.DataFrame]):
