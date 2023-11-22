@@ -16,14 +16,19 @@ dependencies:
   - pyprojroot
   - datasets
   - tokenizers
-  - transformers
+  - transformers=4.35.0
   - cudatoolkit=11.2
   - cudnn=8.1.0
   - black
   - black-jupyter
   - isort
   - evaluate
+  - pytorch
+  - sacrebleu
   - pip:
       - tensorflow<2.11 # Tensorflow 2.10 is the last one supporting GPU on Windows native
       - keras
       - ipynbname
+      - rouge_score
+      - nltk
+      - bert_score
