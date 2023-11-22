@@ -1,5 +1,7 @@
 # Things to be done
 
+attempt without extract_data step
+
 ## High priority
 - Evaluation of stride model on medical dataset (smaller text spans)
 - Analysis of medical dataset (more)
