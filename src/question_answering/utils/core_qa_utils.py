@@ -35,15 +35,15 @@ def concatenate_hf_datasets(datasets: list[Dataset]):
 
 
 def plot_sentence_lengths_histogram(
-        sentences: list[str],
-        figure_path: Path,
-        figure_title: str,
-        divider: int,
-        min_threshold: int,
-        max_threshold: int,
-        reverse_sort: bool = False,
-        x_label: str = "Words count per sentence",
-        y_label: str = "Number of sentences",
+    sentences: list[str],
+    figure_path: Path,
+    figure_title: str,
+    divider: int,
+    min_threshold: int,
+    max_threshold: int,
+    reverse_sort: bool = False,
+    x_label: str = "Words count per sentence",
+    y_label: str = "Number of sentences",
 ):
     word_count_groups = []
     for sentence in sentences:
@@ -59,7 +59,7 @@ def plot_sentence_lengths_histogram(
         x: count
         for x, count in counter.items()
         if min_threshold <= int(x.split("-")[0])
-           and int(x.split("-")[1]) <= max_threshold
+        and int(x.split("-")[1]) <= max_threshold
     }
     sorted_counter = sorted(
         filtered_counter.items(),
@@ -81,15 +81,15 @@ def plot_sentence_lengths_histogram(
 
 
 def plot_correct_predictions_by_sentence_length(
-        sentences: list[str],
-        correctly_predicted: list[bool],
-        figure_path: Path,
-        figure_title: str,
-        divider: int,
-        min_threshold: int,
-        max_threshold: int,
-        x_label: str = "Words count per sentence",
-        y_label: str = "Correct predictions",
+    sentences: list[str],
+    correctly_predicted: list[bool],
+    figure_path: Path,
+    figure_title: str,
+    divider: int,
+    min_threshold: int,
+    max_threshold: int,
+    x_label: str = "Words count per sentence",
+    y_label: str = "Correct predictions",
 ):
     # Create word count groups for x labels
     word_count_groups = []
@@ -99,8 +99,8 @@ def plot_correct_predictions_by_sentence_length(
         lower_group_boundary = divider * num_word_count_group - divider
         upper_group_boundary = divider * num_word_count_group - 1
         if (
-                min_threshold <= lower_group_boundary
-                and upper_group_boundary <= max_threshold
+            min_threshold <= lower_group_boundary
+            and upper_group_boundary <= max_threshold
         ):
             word_count_group = f"{lower_group_boundary}-{upper_group_boundary}"
             word_count_groups.append(word_count_group)
@@ -133,18 +133,18 @@ def plot_correct_predictions_by_sentence_length(
         # Take the sentence into account if it is between min and max threshold
         if word_count_group in word_count_groups:
             range_to_element_count_dict[word_count_group] = (
-                    range_to_element_count_dict[word_count_group] + 1
+                range_to_element_count_dict[word_count_group] + 1
             )
 
             if is_sentence_correctly_predicted:
                 range_to_valid_predictions_count_dict[word_count_group] = (
-                        range_to_valid_predictions_count_dict[word_count_group] + 1
+                    range_to_valid_predictions_count_dict[word_count_group] + 1
                 )
 
     for key in range_to_pred_accuracy_dict.keys():
         range_to_pred_accuracy_dict[key] = (
-                range_to_valid_predictions_count_dict[key]
-                / range_to_element_count_dict[key]
+            range_to_valid_predictions_count_dict[key]
+            / range_to_element_count_dict[key]
         )
 
     # Plot
@@ -165,12 +165,12 @@ def plot_correct_predictions_by_sentence_length(
 
 
 def convert_to_tf_dataset(
-        hf_dataset: Dataset,
-        columns: list[str],
-        label_cols: list[str],
-        collator,
-        batch_size: int,
-        shuffle: bool = False,
+    hf_dataset: Dataset,
+    columns: list[str],
+    label_cols: list[str],
+    collator,
+    batch_size: int,
+    shuffle: bool = False,
 ):
     return hf_dataset.to_tf_dataset(
         columns=columns,
@@ -182,19 +182,19 @@ def convert_to_tf_dataset(
 
 
 def get_best_model_from_checkpoints(
-        trained_model: tf.keras.Model,
-        history: dict,
-        model_name: str,
-        metric: str = "val_loss",
-        remove_checkpoints: bool = True,
+    trained_model: tf.keras.Model,
+    history: dict,
+    model_name: str,
+    metric: str = "val_loss",
+    remove_checkpoints: bool = True,
 ):
     best_epoch = int(np.argmin(history[metric]) + 1)
     best_model_checkpoints_path = (
-            extractive_qa_paths.training_checkpoints_dir / model_name
+        extractive_qa_paths.training_checkpoints_dir / model_name
     )
     best_model_weights_path = (
-            best_model_checkpoints_path
-            / constants.checkpoint_filename_template.format(epoch=best_epoch)
+        best_model_checkpoints_path
+        / constants.checkpoint_filename_template.format(epoch=best_epoch)
     )
     best_model = trained_model
     best_model.load_weights(best_model_weights_path)
@@ -206,14 +206,14 @@ def get_best_model_from_checkpoints(
 
 
 def plot_and_save_fig_from_history(
-        history: dict,
-        attributes: list[str],
-        title: str,
-        y_label: str,
-        x_label: str,
-        legend_descriptors: list[str],
-        figure_dir_path: Path,
-        figure_filename: str,
+    history: dict,
+    attributes: list[str],
+    title: str,
+    y_label: str,
+    x_label: str,
+    legend_descriptors: list[str],
+    figure_dir_path: Path,
+    figure_filename: str,
 ):
     for attribute in attributes:
         plt.plot(history[attribute])
