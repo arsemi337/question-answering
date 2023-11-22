@@ -1,9 +1,9 @@
+import numpy as np
+import sklearn.metrics as skmetrics
 import tensorflow as tf
-from transformers import TFAutoModelForQuestionAnswering
 from datasets import Dataset
 from evaluate import load
-import sklearn.metrics as skmetrics
-import numpy as np
+from transformers import TFAutoModelForQuestionAnswering
 
 from question_answering.paths import extractive_qa_paths
 
@@ -47,19 +47,25 @@ def get_class_preds(predictions, output_key="start_logits", return_classes=True)
         return probabilities.numpy()
 
 
-def extract_answer_tokens(tokenized_dataset_row: dict):
-    start = tokenized_dataset_row["start_positions"]
-    end = tokenized_dataset_row["end_positions"]
-    tokenized_dataset_row["answer_tokens"] = tokenized_dataset_row["input_ids"][
-        start : end + 1
-    ]
+def extract_prediction_tokens(
+    tokenized_dataset_row: dict, start_pred: int, end_pred: int
+):
+    if start_pred == 0 and end_pred == 0:
+        tokenized_dataset_row["prediction_tokens"] = None
+    else:
+        tokenized_dataset_row["prediction_tokens"] = tokenized_dataset_row["input_ids"][
+            start_pred : end_pred + 1
+        ]
     return tokenized_dataset_row
 
 
 def decode_answer_tokens(tokenized_dataset_row: dict, tokenizer):
-    tokens = tokenized_dataset_row["answer_tokens"]
-    answer = tokenizer.decode(tokens)
-    tokenized_dataset_row["predicted_answer_text"] = answer
+    prediction_tokens = tokenized_dataset_row["prediction_tokens"]
+    if prediction_tokens is not None:
+        prediction = tokenizer.decode(prediction_tokens)
+    else:
+        prediction = None
+    tokenized_dataset_row["predicted_answer_text"] = prediction
     return tokenized_dataset_row
 
 
@@ -67,19 +73,48 @@ def mark_correct_predictions(tokenized_dataset_row: dict):
     actual_result = tokenized_dataset_row["answer_text"]
     predicted_result = tokenized_dataset_row["predicted_answer_text"]
 
-    if actual_result == predicted_result:
-        tokenized_dataset_row["correctly_predicted"] = 1
-    else:
-        tokenized_dataset_row["correctly_predicted"] = 0
+    if actual_result is not None and predicted_result is not None:
+        # Both are not None
+        if actual_result == predicted_result:
+            tokenized_dataset_row["correctly_predicted"] = 1
+        else:
+            tokenized_dataset_row["correctly_predicted"] = 0
 
-    if actual_result.lower() == predicted_result.lower():
-        tokenized_dataset_row["correctly_predicted_lowercase"] = 1
+        if actual_result.lower() == predicted_result.lower():
+            tokenized_dataset_row["correctly_predicted_lowercase"] = 1
+        else:
+            tokenized_dataset_row["correctly_predicted_lowercase"] = 0
     else:
-        tokenized_dataset_row["correctly_predicted_lowercase"] = 0
-
-    # Tutaj coś z interpunkcją?
+        if actual_result == predicted_result:
+            # Both are None
+            tokenized_dataset_row["correctly_predicted"] = 1
+            tokenized_dataset_row["correctly_predicted_lowercase"] = 1
+        else:
+            # One is None but not the other
+            tokenized_dataset_row["correctly_predicted"] = 0
+            tokenized_dataset_row["correctly_predicted_lowercase"] = 0
 
     return tokenized_dataset_row
+
+
+def calculate_general_accuracy(actual: list[str | None], predicted: list[str | None]):
+    count = len(actual)
+    good_preds_count = 0
+    good_preds_lowercase_count = 0
+
+    for index, actual_result in enumerate(actual):
+        predicted_result = predicted[index]
+        if actual_result is not None and predicted_result is not None:
+            if actual_result == predicted_result:
+                good_preds_count = good_preds_count + 1
+            if actual_result.lower() == predicted_result.lower():
+                good_preds_lowercase_count = good_preds_lowercase_count + 1
+        else:
+            if actual_result == predicted[index]:
+                good_preds_count = good_preds_count + 1
+                good_preds_lowercase_count = good_preds_lowercase_count + 1
+
+    return good_preds_count / count, good_preds_lowercase_count / count
 
 
 def calculate_pure_exact_match(actual: list[str], predicted: list[str]):

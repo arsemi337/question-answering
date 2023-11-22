@@ -1,0 +1,44 @@
+{
+    "test_set": {
+        "end_positions": {
+            "f1": 0.7293581058421088,
+            "precision": 0.7293581058421088,
+            "recall": 0.7293581058421088
+        },
+        "exact_match": {
+            "case_insensitive": 0.5271912553465952,
+            "case_insensitive_and_no_punctuation": 0.5271912553465952,
+            "case_sensitive": 0.24244687351483468,
+            "squad": 59.08751442732025,
+            "squad_f1": 73.2748538346897
+        },
+        "general_accuracy": 0.24669662619894023,
+        "general_lowercase_accuracy": 0.5280032195318264,
+        "loss": 1.0234862565994263,
+        "start_positions": {
+            "f1": 0.6922664162586357,
+            "precision": 0.6922664162586357,
+            "recall": 0.6922664162586357
+        }
+    },
+    "training": {
+        "attempted_epochs": 10,
+        "best_epoch": 1,
+        "gpu": "NVIDIA GeForce RTX 3070 Ti",
+        "metrics": {
+            "loss": [
+                1.296237826347351,
+                0.7553810477256775,
+                0.486661821603775,
+                0.3174739480018616
+            ],
+            "val_loss": [
+                1.0032683610916138,
+                1.0482121706008911,
+                1.2365386486053467,
+                1.3496967554092407
+            ]
+        },
+        "training_time": 11715.978225600003
+    }
+}
