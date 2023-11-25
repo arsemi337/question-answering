@@ -14,5 +14,5 @@ In case of extractive QA, two datasets are used:
 * a medical QA dataset with questions and answers regarding COVID-19
 
 ### Getting the datasets
-In order to generate csv files for extractive QA go through [this notebook](./../extractive-qa/notebooks/extract_data.ipynb).
+In order to generate csv files for extractive QA go through [this notebook](./../extractive-qa/notebooks/squad/other/extract_data.ipynb).
 Nothing else is required as datasets are read from the [Hugging face datasets](https://huggingface.co/) site.

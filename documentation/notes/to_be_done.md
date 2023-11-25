@@ -1,10 +1,9 @@
 # Things to be done
 
-attempt without extract_data step
-
 ## High priority
 - Evaluation of stride model on medical dataset (smaller text spans)
-- Analysis of medical dataset (more)
+- General accuracy and altered test set preprocessing
+- How many start_preds before end_preds and how many of these cases can be turned into actual valid predictions using the logits processing
 
 ## Medium priority
 - Hyperparameter tuning of extractive qa models
