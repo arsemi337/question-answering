@@ -13,3 +13,8 @@
 
 ## Optional
 - Training models with varying stride and comparing their performance
+
+## To be remembered
+- test_dataset sample with index 4 has "gold" as answer, but it's a part of word golden
+- https://huggingface.co/spaces/evaluate-metric/squad (human performance etc.)
+- https://kierszbaumsamuel.medium.com/f1-score-in-nlp-span-based-qa-task-5b115a5e7d41 (precision, recall, f1 in case of extractive qa)
