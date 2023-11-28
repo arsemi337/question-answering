@@ -5,7 +5,7 @@ from collections import Counter
 import evaluate
 
 
-def calculate_squad_basic_accuracy(
+def calculate_squad_accuracies(
     start_actual: list[list[int]],
     end_actual: list[list[int]],
     start_preds: list[int],
@@ -27,15 +27,29 @@ def calculate_squad_basic_accuracy(
 
         start_end_actual_pairs.append(temp)
 
-    good_predictions_count = 0
+    start_good_predictions_count = 0.
+    end_good_predictions_count = 0.
+    full_good_predictions_count = 0.
     for i in range(length):
+        sample_start_pred = start_preds[i]
+        sample_end_pred = end_preds[i]
         sample_start_end_actual_pairs = start_end_actual_pairs[i]
         sample_start_end_pred_pair = start_end_pred_pairs[i]
 
-        if sample_start_end_pred_pair in sample_start_end_actual_pairs:
-            good_predictions_count += 1
+        if sample_start_pred in start_actual[i]:
+            start_good_predictions_count += 1
 
-    return good_predictions_count / length
+        if sample_end_pred in end_actual[i]:
+            end_good_predictions_count += 1
+
+        if sample_start_end_pred_pair in sample_start_end_actual_pairs:
+            full_good_predictions_count += 1
+
+    return {
+        "start_accuracy": start_good_predictions_count / length,
+        "end_accuracy": end_good_predictions_count / length,
+        "full_accuracy": full_good_predictions_count / length
+    }
 
 
 def calculate_original_squad_metrics(
@@ -101,10 +115,10 @@ def calculate_squad_qa_metrics(
             return prediction == valid_answer
 
     length = __ensure_same_sizes(answers, predicted_texts)
-    precision_metric = 0.0
-    recall_metric = 0.0
-    f1_metric = 0.0
-    exact_match_metric = 0.0
+    precision_metric = 0.
+    recall_metric = 0.
+    f1_metric = 0.
+    exact_match_metric = 0.
 
     for i in range(length):
         valid_answers = answers[i]
