@@ -1,12 +1,13 @@
 import tensorflow as tf
-from transformers import TFAutoModelForSeq2SeqLM, BartTokenizerFast
-from datasets import Dataset
+from transformers import TFAutoModelForSeq2SeqLM, BartTokenizerFast, DataCollatorForSeq2Seq
 from evaluate import load
 import sklearn.metrics as skmetrics
 import numpy as np
 from tqdm import tqdm
 import pandas as pd
+from pandas import DataFrame
 import evaluate
+from tqdm import tqdm
 
 from question_answering.paths import generative_qa_paths
 
@@ -33,7 +34,7 @@ def load_model(
 
 
 def generate_predictions(
-        model: tf.keras.Model, batch, max_length: int
+        model: tf.keras.Model, batch, max_length: int,
 ):
     return model.generate(
         input_ids=batch["input_ids"],
@@ -43,27 +44,43 @@ def generate_predictions(
 
 
 def get_dataset_dataframe_with_predictions(
-        model: tf.keras.Model, tokenizer: BartTokenizerFast, tf_dataset, max_length: int,
+        model: tf.keras.Model,
+        tokenizer: BartTokenizerFast,
+        tf_dataset_list,
+        dataframe: DataFrame,
+        max_length: int,
+        index_to_start_from: int = 0
 ):
     predictions_list = []
     labels_list = []
     question_contexts_list = []
 
-    for batch, labels in tqdm(tf_dataset):
-        predictions = generate_predictions(model, batch, max_length)
-        decoded_predictions = tokenizer.batch_decode(predictions, skip_special_tokens=True)
-        labels = labels.numpy()
-        labels = np.where(labels != -100, labels, tokenizer.pad_token_id)
-        decoded_labels = tokenizer.batch_decode(labels, skip_special_tokens=True)
-        decoded_predictions = [prediction.strip() for prediction in decoded_predictions]
-        decoded_labels = [label.strip() for label in decoded_labels]
+    i = 0
+    for dataset in tqdm(tf_dataset_list):
+        if i < index_to_start_from:
+            i = i + 1
+            continue
+        for batch, labels in tqdm(dataset):
+            predictions = generate_predictions(model, batch, max_length)
+            decoded_predictions = tokenizer.batch_decode(predictions, skip_special_tokens=True)
+            labels = labels
+            labels = np.where(labels != -100, labels, tokenizer.pad_token_id)
+            decoded_labels = tokenizer.batch_decode(labels, skip_special_tokens=True)
+            decoded_predictions = [prediction.strip() for prediction in decoded_predictions]
+            decoded_labels = [label.strip() for label in decoded_labels]
+            predictions_list.extend(decoded_predictions)
+            labels_list.extend(decoded_labels)
+            question_contexts_list.extend(tokenizer.batch_decode(batch['input_ids'], skip_special_tokens=True))
 
-        predictions_list.extend(decoded_predictions)
-        labels_list.extend(decoded_labels)
-        question_contexts_list.extend(tokenizer.batch_decode(batch['input_ids'], skip_special_tokens=True))
+            data = {
+                'question_contexts': tokenizer.batch_decode(batch['input_ids'], skip_special_tokens=True),
+                'labels': decoded_labels,
+                'predictions': decoded_predictions
+            }
+            dataframe = pd.concat([dataframe, pd.DataFrame(data)], ignore_index=True)
+        i = i + 1
 
-    return pd.DataFrame(list(zip(question_contexts_list, predictions_list, labels_list)),
-                        columns=['question_contexts', 'predictions', 'labels'])
+    return dataframe
 
 
 def split_questions_and_contexts_into_two_columns(
@@ -86,6 +103,7 @@ def split_questions_and_contexts_into_two_columns(
         return pd.DataFrame(data)
     else:
         return pd.DataFrame().empty
+
 
 def get_metrics(
         dataset_dataframe_with_predictions
