@@ -114,13 +114,94 @@ def get_metrics(
     bleu_metric = evaluate.load("bleu")
     rouge_metric = evaluate.load("rouge")
     meteor_metric = evaluate.load("meteor")
-    bertscore_metric = evaluate.load("bertscore")
-    sacrebleu_metric = evaluate.load("sacrebleu")
 
     bleu_result = bleu_metric.compute(predictions=predictions_list, references=labels_list)
     rogue_result = rouge_metric.compute(predictions=predictions_list, references=labels_list)
     meteor_result = meteor_metric.compute(predictions=predictions_list, references=labels_list)
-    bertscore_result = bertscore_metric.compute(predictions=predictions_list, references=labels_list, lang='en')
-    sacrebleu_result = sacrebleu_metric.compute(predictions=predictions_list, references=labels_list)
 
-    return bleu_result, rogue_result, meteor_result, bertscore_result, sacrebleu_result
+    return bleu_result, rogue_result, meteor_result
+
+
+def calculate_rouges_for_each_sample(dataframe):
+    rouge_metric = evaluate.load("rouge")
+    rogue1_list = []
+    rogue2_list = []
+    rogueL_list = []
+
+    for _, row in tqdm(dataframe.iterrows()):
+        rogue1_list.append(rouge_metric.compute(
+            predictions=[row['predictions']], references=[row['labels']])['rouge1']
+                           )
+        rogue2_list.append(rouge_metric.compute(
+            predictions=[row['predictions']], references=[row['labels']])['rouge2']
+                           )
+        rogueL_list.append(rouge_metric.compute(
+            predictions=[row['predictions']], references=[row['labels']])['rougeL']
+                           )
+
+    dataframe['rouge1'] = rogue1_list
+    dataframe['rouge2'] = rogue2_list
+    dataframe['rougeL'] = rogueL_list
+
+    return dataframe
+
+
+def calculate_bleus_for_each_sample(dataframe):
+    bleu_metric = evaluate.load("bleu")
+    bleu_list = []
+    bleu1_list = []
+    bleu2_list = []
+
+    for _, row in tqdm(dataframe.iterrows()):
+        bleu_list.append(bleu_metric.compute(
+            predictions=[row['predictions']], references=[row['labels']])['bleu']
+                         )
+        bleu1_list.append(bleu_metric.compute(
+            predictions=[row['predictions']], references=[row['labels']])['precisions'][0]
+                          )
+        bleu2_list.append(bleu_metric.compute(
+            predictions=[row['predictions']], references=[row['labels']])['precisions'][1]
+                          )
+
+    dataframe['bleu'] = bleu_list
+    dataframe['bleu1'] = bleu1_list
+    dataframe['bleu2'] = bleu2_list
+
+    return dataframe
+
+
+def calculate_meteor_for_each_sample(dataframe):
+    meteor_metric = evaluate.load("meteor")
+    meteor_list = []
+
+    for _, row in tqdm(dataframe.iterrows()):
+        meteor_list.append(meteor_metric.compute(
+            predictions=[row['predictions']], references=[row['labels']])['meteor']
+                           )
+
+    dataframe['meteor'] = meteor_list
+
+    return dataframe
+
+
+def calculate_prediction_numbers_per_metric_range(
+        df, metric_name, thresholds
+):
+    prediction_numbers = []
+
+    for index, _ in enumerate(thresholds):
+        if index == (len(thresholds) - 1):
+            break
+
+        if index == 0:
+            prediction_numbers.append(
+                len(df[(df[metric_name] >= thresholds[index]) &
+                       (df[metric_name] <= thresholds[index + 1])])
+            )
+        else:
+            prediction_numbers.append(
+                len(df[(df[metric_name] > thresholds[index]) &
+                       (df[metric_name] <= thresholds[index + 1])])
+            )
+
+    return prediction_numbers
