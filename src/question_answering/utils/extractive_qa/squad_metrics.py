@@ -1,17 +1,16 @@
-import re
-import string
-from collections import Counter
+from __metrics_helpers import ensure_same_sizes, f1_score, precision_score, recall_score, \
+    exact_match_score
 
 import evaluate
 
 
 def calculate_squad_accuracies(
-    start_actual: list[list[int]],
-    end_actual: list[list[int]],
-    start_preds: list[int],
-    end_preds: list[int],
+        start_actual: list[list[int]],
+        end_actual: list[list[int]],
+        start_preds: list[int],
+        end_preds: list[int],
 ):
-    length = __ensure_same_sizes(start_actual, end_actual, start_preds, end_preds)
+    length = ensure_same_sizes(start_actual, end_actual, start_preds, end_preds)
 
     # Prepare data for comparison
     start_end_pred_pairs = list(zip(start_preds, end_preds))
@@ -53,9 +52,9 @@ def calculate_squad_accuracies(
 
 
 def calculate_original_squad_metrics(
-    ids: list[str], answers: list[dict], predicted_texts: list[str]
+        ids: list[str], answers: list[dict], predicted_texts: list[str]
 ) -> dict:
-    __ensure_same_sizes(ids, answers, predicted_texts)
+    ensure_same_sizes(ids, answers, predicted_texts)
 
     metric = evaluate.load("squad")
 
@@ -72,49 +71,9 @@ def calculate_original_squad_metrics(
 
 
 def calculate_squad_qa_metrics(
-    answers: list[list[str]], predicted_texts: list[str], normalize: bool
+        answers: list[list[str]], predicted_texts: list[str], normalize: bool
 ):
-    def tp_fp_fn(prediction: str, valid_answer: str):
-        if normalize:
-            prediction_tokens = __normalize_text(prediction).split()
-            ground_truth_tokens = __normalize_text(valid_answer).split()
-        else:
-            prediction_tokens = prediction.split()
-            ground_truth_tokens = valid_answer.split()
-
-        common = Counter(prediction_tokens) & Counter(ground_truth_tokens)
-        num_same = sum(common.values())
-        tp = num_same
-        fp = len(prediction_tokens) - num_same
-        fn = len(ground_truth_tokens) - num_same
-        return tp, fp, fn
-
-    def precision_score(prediction: str, valid_answer: str):
-        tp, fp, fn = tp_fp_fn(valid_answer, prediction)
-        if tp == 0:
-            return 0
-        return (1.0 * tp) / (tp + fp)
-
-    def recall_score(prediction: str, valid_answer: str):
-        tp, fp, fn = tp_fp_fn(valid_answer, prediction)
-        if tp == 0:
-            return 0
-        return (1.0 * tp) / (tp + fn)
-
-    def f1_score(prediction: str, valid_answer: str):
-        precision = precision_score(prediction, valid_answer)
-        recall = recall_score(prediction, valid_answer)
-        if precision == 0 or recall == 0:
-            return 0
-        return (2 * precision * recall) / (precision + recall)
-
-    def exact_match_score(prediction: str, valid_answer: str):
-        if normalize:
-            return __normalize_text(prediction) == __normalize_text(valid_answer)
-        else:
-            return prediction == valid_answer
-
-    length = __ensure_same_sizes(answers, predicted_texts)
+    length = ensure_same_sizes(answers, predicted_texts)
     precision_metric = 0.
     recall_metric = 0.
     f1_metric = 0.
@@ -125,16 +84,16 @@ def calculate_squad_qa_metrics(
         predicted_text = predicted_texts[i]
 
         precision_metric += __metric_max_over_ground_truths(
-            precision_score, predicted_text, valid_answers
+            metric_fn=precision_score, prediction=predicted_text, ground_truths=valid_answers, normalize=normalize
         )
         recall_metric += __metric_max_over_ground_truths(
-            recall_score, predicted_text, valid_answers
+            metric_fn=recall_score, prediction=predicted_text, ground_truths=valid_answers, normalize=normalize
         )
         f1_metric += __metric_max_over_ground_truths(
-            f1_score, predicted_text, valid_answers
+            metric_fn=f1_score, prediction=predicted_text, ground_truths=valid_answers, normalize=normalize
         )
         exact_match_metric += __metric_max_over_ground_truths(
-            exact_match_score, predicted_text, valid_answers
+            metric_fn=exact_match_score, prediction=predicted_text, ground_truths=valid_answers, normalize=normalize
         )
 
     return {
@@ -145,34 +104,9 @@ def calculate_squad_qa_metrics(
     }
 
 
-def __metric_max_over_ground_truths(metric_fn, prediction, ground_truths):
+def __metric_max_over_ground_truths(metric_fn, prediction, ground_truths, normalize: bool):
     scores_for_ground_truths = []
     for ground_truth in ground_truths:
-        score = metric_fn(prediction, ground_truth)
+        score = metric_fn(prediction=prediction, valid_answer=ground_truth, normalize=normalize)
         scores_for_ground_truths.append(score)
     return max(scores_for_ground_truths)
-
-
-def __normalize_text(s):
-    def remove_articles(text):
-        return re.sub(r"\b(a|an|the)\b", " ", text)
-
-    def white_space_fix(text):
-        return " ".join(text.split())
-
-    def remove_punc(text):
-        exclude = set(string.punctuation)
-        return "".join(ch for ch in text if ch not in exclude)
-
-    def lower(text):
-        return text.lower()
-
-    return white_space_fix(remove_articles(remove_punc(lower(s))))
-
-
-def __ensure_same_sizes(*args):
-    length = len(args[0])
-    if not all([len(arg) == length for arg in args]):
-        raise Exception("List lengths are not the same!")
-    else:
-        return length
