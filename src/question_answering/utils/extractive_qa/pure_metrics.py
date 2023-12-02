@@ -1,5 +1,4 @@
-import evaluate
-from __metrics_helpers import (
+from .__metrics_helpers import (
     ensure_same_sizes,
     f1_score,
     precision_score,
