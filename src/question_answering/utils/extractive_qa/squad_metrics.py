@@ -1,14 +1,19 @@
-from __metrics_helpers import ensure_same_sizes, f1_score, precision_score, recall_score, \
-    exact_match_score
+from __metrics_helpers import (
+    ensure_same_sizes,
+    f1_score,
+    precision_score,
+    recall_score,
+    exact_match_score,
+)
 
 import evaluate
 
 
 def calculate_squad_accuracies(
-        start_actual: list[list[int]],
-        end_actual: list[list[int]],
-        start_preds: list[int],
-        end_preds: list[int],
+    start_actual: list[list[int]],
+    end_actual: list[list[int]],
+    start_preds: list[int],
+    end_preds: list[int],
 ):
     length = ensure_same_sizes(start_actual, end_actual, start_preds, end_preds)
 
@@ -26,9 +31,9 @@ def calculate_squad_accuracies(
 
         start_end_actual_pairs.append(temp)
 
-    start_good_predictions_count = 0.
-    end_good_predictions_count = 0.
-    full_good_predictions_count = 0.
+    start_good_predictions_count = 0.0
+    end_good_predictions_count = 0.0
+    full_good_predictions_count = 0.0
     for i in range(length):
         sample_start_pred = start_preds[i]
         sample_end_pred = end_preds[i]
@@ -47,12 +52,12 @@ def calculate_squad_accuracies(
     return {
         "start_accuracy": start_good_predictions_count / length,
         "end_accuracy": end_good_predictions_count / length,
-        "full_accuracy": full_good_predictions_count / length
+        "full_accuracy": full_good_predictions_count / length,
     }
 
 
 def calculate_original_squad_metrics(
-        ids: list[str], answers: list[dict], predicted_texts: list[str]
+    ids: list[str], answers: list[dict], predicted_texts: list[str]
 ) -> dict:
     ensure_same_sizes(ids, answers, predicted_texts)
 
@@ -71,29 +76,41 @@ def calculate_original_squad_metrics(
 
 
 def calculate_squad_qa_metrics(
-        answers: list[list[str]], predicted_texts: list[str], normalize: bool
+    answers: list[list[str]], predicted_texts: list[str], normalize: bool
 ):
     length = ensure_same_sizes(answers, predicted_texts)
-    precision_metric = 0.
-    recall_metric = 0.
-    f1_metric = 0.
-    exact_match_metric = 0.
+    precision_metric = 0.0
+    recall_metric = 0.0
+    f1_metric = 0.0
+    exact_match_metric = 0.0
 
     for i in range(length):
         valid_answers = answers[i]
         predicted_text = predicted_texts[i]
 
         precision_metric += __metric_max_over_ground_truths(
-            metric_fn=precision_score, prediction=predicted_text, ground_truths=valid_answers, normalize=normalize
+            metric_fn=precision_score,
+            prediction=predicted_text,
+            ground_truths=valid_answers,
+            normalize=normalize,
         )
         recall_metric += __metric_max_over_ground_truths(
-            metric_fn=recall_score, prediction=predicted_text, ground_truths=valid_answers, normalize=normalize
+            metric_fn=recall_score,
+            prediction=predicted_text,
+            ground_truths=valid_answers,
+            normalize=normalize,
         )
         f1_metric += __metric_max_over_ground_truths(
-            metric_fn=f1_score, prediction=predicted_text, ground_truths=valid_answers, normalize=normalize
+            metric_fn=f1_score,
+            prediction=predicted_text,
+            ground_truths=valid_answers,
+            normalize=normalize,
         )
         exact_match_metric += __metric_max_over_ground_truths(
-            metric_fn=exact_match_score, prediction=predicted_text, ground_truths=valid_answers, normalize=normalize
+            metric_fn=exact_match_score,
+            prediction=predicted_text,
+            ground_truths=valid_answers,
+            normalize=normalize,
         )
 
     return {
@@ -104,9 +121,13 @@ def calculate_squad_qa_metrics(
     }
 
 
-def __metric_max_over_ground_truths(metric_fn, prediction, ground_truths, normalize: bool):
+def __metric_max_over_ground_truths(
+    metric_fn, prediction, ground_truths, normalize: bool
+):
     scores_for_ground_truths = []
     for ground_truth in ground_truths:
-        score = metric_fn(prediction=prediction, valid_answer=ground_truth, normalize=normalize)
+        score = metric_fn(
+            prediction=prediction, valid_answer=ground_truth, normalize=normalize
+        )
         scores_for_ground_truths.append(score)
     return max(scores_for_ground_truths)

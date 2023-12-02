@@ -12,22 +12,30 @@ def ensure_same_sizes(*args):
 
 
 def precision_score(prediction: str, valid_answer: str, normalize: bool):
-    tp, fp, fn = __tp_fp_fn(prediction=prediction, valid_answer=valid_answer, normalize=normalize)
+    tp, fp, fn = __tp_fp_fn(
+        prediction=prediction, valid_answer=valid_answer, normalize=normalize
+    )
     if tp == 0:
         return 0
     return (1.0 * tp) / (tp + fp)
 
 
 def recall_score(prediction: str, valid_answer: str, normalize: bool):
-    tp, fp, fn = __tp_fp_fn(prediction=prediction, valid_answer=valid_answer, normalize=normalize)
+    tp, fp, fn = __tp_fp_fn(
+        prediction=prediction, valid_answer=valid_answer, normalize=normalize
+    )
     if tp == 0:
         return 0
     return (1.0 * tp) / (tp + fn)
 
 
 def f1_score(prediction: str, valid_answer: str, normalize: bool):
-    precision = precision_score(prediction=prediction, valid_answer=valid_answer, normalize=normalize)
-    recall = recall_score(prediction=prediction, valid_answer=valid_answer, normalize=normalize)
+    precision = precision_score(
+        prediction=prediction, valid_answer=valid_answer, normalize=normalize
+    )
+    recall = recall_score(
+        prediction=prediction, valid_answer=valid_answer, normalize=normalize
+    )
     if precision == 0 or recall == 0:
         return 0
     return (2 * precision * recall) / (precision + recall)

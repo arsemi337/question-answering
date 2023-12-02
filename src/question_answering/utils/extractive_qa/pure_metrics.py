@@ -1,13 +1,18 @@
 import evaluate
-from __metrics_helpers import ensure_same_sizes, f1_score, precision_score, recall_score, \
-    exact_match_score
+from __metrics_helpers import (
+    ensure_same_sizes,
+    f1_score,
+    precision_score,
+    recall_score,
+    exact_match_score,
+)
 
 
 def calculate_basic_accuracy(
-        start_actual: list[int],
-        end_actual: list[int],
-        start_preds: list[int],
-        end_preds: list[int],
+    start_actual: list[int],
+    end_actual: list[int],
+    start_preds: list[int],
+    end_preds: list[int],
 ):
     length = ensure_same_sizes(start_actual, end_actual, start_preds, end_preds)
 
@@ -15,9 +20,9 @@ def calculate_basic_accuracy(
     start_end_pred_pairs = list(zip(start_preds, end_preds))
     start_end_actual_pairs = list(zip(start_actual, end_actual))
 
-    start_good_predictions_count = 0.
-    end_good_predictions_count = 0.
-    full_good_predictions_count = 0.
+    start_good_predictions_count = 0.0
+    end_good_predictions_count = 0.0
+    full_good_predictions_count = 0.0
     for i in range(length):
         sample_start_pred = start_preds[i]
         sample_end_pred = end_preds[i]
@@ -36,20 +41,18 @@ def calculate_basic_accuracy(
     return {
         "start_accuracy": start_good_predictions_count / length,
         "end_accuracy": end_good_predictions_count / length,
-        "full_accuracy": full_good_predictions_count / length
+        "full_accuracy": full_good_predictions_count / length,
     }
 
 
 def calculate_pure_qa_metrics(
-        answers: list[str],
-        predicted_texts: list[str],
-        normalize: bool
+    answers: list[str], predicted_texts: list[str], normalize: bool
 ):
     length = ensure_same_sizes(answers, predicted_texts)
-    precision_metric = 0.
-    recall_metric = 0.
-    f1_metric = 0.
-    exact_match_metric = 0.
+    precision_metric = 0.0
+    recall_metric = 0.0
+    f1_metric = 0.0
+    exact_match_metric = 0.0
 
     for i in range(length):
         valid_answer = answers[i]
