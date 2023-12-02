@@ -34,20 +34,6 @@
             "20_best_standard": 0.8691994022004037
         },
         "precision": {
-            "01_best_normalized": 0.8611610148793891,
-            "01_best_standard": 0.8704941824683432,
-            "02_best_normalized": 0.881993635559455,
-            "02_best_standard": 0.8917468752974312,
-            "03_best_normalized": 0.8829597888742365,
-            "03_best_standard": 0.8926103928898989,
-            "05_best_normalized": 0.8828054887435882,
-            "05_best_standard": 0.8924324409144065,
-            "10_best_normalized": 0.8828054887435882,
-            "10_best_standard": 0.8924324409144065,
-            "20_best_normalized": 0.8828054887435882,
-            "20_best_standard": 0.8924324409144065
-        },
-        "recall": {
             "01_best_normalized": 0.8504395849969083,
             "01_best_standard": 0.8579726688563287,
             "02_best_normalized": 0.8702291037389983,
@@ -60,6 +46,20 @@
             "10_best_standard": 0.8789831674768089,
             "20_best_normalized": 0.871212815706627,
             "20_best_standard": 0.8789831674768089
+        },
+        "recall": {
+            "01_best_normalized": 0.8611610148793891,
+            "01_best_standard": 0.8704941824683432,
+            "02_best_normalized": 0.881993635559455,
+            "02_best_standard": 0.8917468752974312,
+            "03_best_normalized": 0.8829597888742365,
+            "03_best_standard": 0.8926103928898989,
+            "05_best_normalized": 0.8828054887435882,
+            "05_best_standard": 0.8924324409144065,
+            "10_best_normalized": 0.8828054887435882,
+            "10_best_standard": 0.8924324409144065,
+            "20_best_normalized": 0.8828054887435882,
+            "20_best_standard": 0.8924324409144065
         }
     },
     "training": {
