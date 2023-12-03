@@ -7,7 +7,7 @@ from .__metrics_helpers import (
 )
 
 
-def calculate_basic_accuracy(
+def calculate_pure_accuracies(
     start_actual: list[int],
     end_actual: list[int],
     start_preds: list[int],
@@ -28,10 +28,10 @@ def calculate_basic_accuracy(
         sample_start_end_actual_pairs = start_end_actual_pairs[i]
         sample_start_end_pred_pair = start_end_pred_pairs[i]
 
-        if sample_start_pred in start_actual[i]:
+        if sample_start_pred == start_actual[i]:
             start_good_predictions_count += 1
 
-        if sample_end_pred in end_actual[i]:
+        if sample_end_pred == end_actual[i]:
             end_good_predictions_count += 1
 
         if sample_start_end_pred_pair == sample_start_end_actual_pairs:
