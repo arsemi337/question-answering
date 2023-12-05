@@ -1,8 +1,9 @@
 from pathlib import Path
 
 import matplotlib.pyplot as plt
-from .__helpers import create_dirs_if_not_exists
 from matplotlib.ticker import PercentFormatter
+
+from .__helpers import create_dirs_if_not_exists
 
 
 def plot_correct_predictions_by_sentence_length(
