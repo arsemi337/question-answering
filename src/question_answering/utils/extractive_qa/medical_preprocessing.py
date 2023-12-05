@@ -2,7 +2,7 @@ from datasets import Dataset
 
 
 def span_dataset(
-    dataset: Dataset, window: int, batched: bool, remove_columns: list[str] = None
+    dataset: Dataset, window: int, batched: bool = True, remove_columns: list[str] = None
 ):
     def get_context_span(context: str, answer_start: int, answer_text: str):
         start_span = max(0, answer_start - window)
