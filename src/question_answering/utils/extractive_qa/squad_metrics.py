@@ -1,12 +1,12 @@
-from .__metrics_helpers import (
+import evaluate
+
+from .__helpers import (
     ensure_same_sizes,
+    exact_match_score,
     f1_score,
     precision_score,
     recall_score,
-    exact_match_score,
 )
-
-import evaluate
 
 
 def calculate_squad_accuracies(
@@ -119,6 +119,28 @@ def calculate_squad_qa_metrics(
         "f1": f1_metric / length,
         "exact_match": exact_match_metric / length,
     }
+
+
+def get_is_correctly_predicted(
+    answers: list[list[str]], predicted_texts: list[str], normalize: bool
+):
+    length = ensure_same_sizes(answers, predicted_texts)
+    is_correctly_predicted = []
+
+    for i in range(length):
+        valid_answers = answers[i]
+        predicted_text = predicted_texts[i]
+
+        is_correctly_predicted.append(
+            __metric_max_over_ground_truths(
+                metric_fn=exact_match_score,
+                prediction=predicted_text,
+                ground_truths=valid_answers,
+                normalize=normalize,
+            )
+        )
+
+    return is_correctly_predicted
 
 
 def __metric_max_over_ground_truths(

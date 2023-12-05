@@ -1,9 +1,9 @@
-from .__metrics_helpers import (
+from .__helpers import (
     ensure_same_sizes,
+    exact_match_score,
     f1_score,
     precision_score,
     recall_score,
-    exact_match_score,
 )
 
 
@@ -76,3 +76,24 @@ def calculate_pure_qa_metrics(
         "f1": f1_metric / length,
         "exact_match": exact_match_metric / length,
     }
+
+
+def get_is_correctly_predicted(
+    answers: list[str], predicted_texts: list[str], normalize: bool
+):
+    length = ensure_same_sizes(answers, predicted_texts)
+    is_correctly_predicted = []
+
+    for i in range(length):
+        valid_answer = answers[i]
+        predicted_text = predicted_texts[i]
+
+        is_correctly_predicted.append(
+            exact_match_score(
+                valid_answer=valid_answer,
+                prediction=predicted_text,
+                normalize=normalize,
+            )
+        )
+
+    return is_correctly_predicted

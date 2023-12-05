@@ -1,6 +1,12 @@
 import re
 import string
 from collections import Counter
+from pathlib import Path
+
+
+def create_dirs_if_not_exists(directory: Path):
+    if not directory.is_dir():
+        directory.mkdir(parents=True)
 
 
 def ensure_same_sizes(*args):
@@ -71,11 +77,11 @@ def __normalize_text(s):
     def white_space_fix(text):
         return " ".join(text.split())
 
-    def remove_punc(text):
+    def remove_punctuation(text):
         exclude = set(string.punctuation)
         return "".join(ch for ch in text if ch not in exclude)
 
     def lower(text):
         return text.lower()
 
-    return white_space_fix(remove_articles(remove_punc(lower(s))))
+    return white_space_fix(remove_articles(remove_punctuation(lower(s))))
