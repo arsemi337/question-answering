@@ -1,0 +1,38 @@
+{
+    "attempted_epochs": 1,
+    "best_epoch": 1,
+    "gpu": "NVIDIA GeForce RTX 3070 Ti",
+    "history": {
+        "end_logits_accuracy": [
+            0.5048879981040955
+        ],
+        "end_logits_loss": [
+            2.031710624694824
+        ],
+        "loss": [
+            4.164373397827148
+        ],
+        "start_logits_accuracy": [
+            0.47311609983444214
+        ],
+        "start_logits_loss": [
+            2.132661819458008
+        ],
+        "val_end_logits_accuracy": [
+            0.5757575631141663
+        ],
+        "val_end_logits_loss": [
+            1.6765694618225098
+        ],
+        "val_loss": [
+            3.47540283203125
+        ],
+        "val_start_logits_accuracy": [
+            0.5253854393959045
+        ],
+        "val_start_logits_loss": [
+            1.7988297939300537
+        ]
+    },
+    "training_time": 313.0717004999751
+}
