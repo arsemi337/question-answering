@@ -1,16 +1,26 @@
 # Things to be done
 
-attempt without extract_data step
+## Common:
+- Hyperparameter tuning
 
-## High priority
-- Evaluation of stride model on medical dataset (smaller text spans)
-- Analysis of medical dataset (more)
+## Extractive qa:
 
-## Medium priority
-- Hyperparameter tuning of extractive qa models
+### This semester
+- Train BERT on medical data
 
-## Low priority
-- Train squad_bert-uncased_1 again
+### Next semester?
 
-## Optional
-- Training models with varying stride and comparing their performance
+##### 1. How many of bad predictions have start pred greater than end pred?
+- Retrieve bad preds
+- How many have start pred greater than end pred?
+- How many of these can be turned into good predictions?
+
+##### 2. Could check if accuracy == exact match, when using same amounts of samples for calculating these metrics
+
+##### 3. Take a deeper look into predictions and ground truth - especially at the normalization and the way it improves the results
+- Get predictions where normalized result is good but normal one isn't
+- In case of correct normal predictions, are normalized ones always good? - Is it always an improvement?
+
+## Generative qa:
+- trash
+

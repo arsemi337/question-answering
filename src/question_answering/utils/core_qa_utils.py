@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 import tensorflow as tf
 from datasets import Dataset, concatenate_datasets
-from matplotlib.ticker import MaxNLocator, PercentFormatter
+from matplotlib.ticker import MaxNLocator
 
 from question_answering.constants import constants
 from question_answering.paths import extractive_qa_paths, generative_qa_paths
@@ -23,8 +23,10 @@ def load_datasets_from_csv(dataset_path: Path, filenames=None):
 
 
 def load_datasets_from_json(dataset_path: Path, filenames: list[str]):
-    jsons = [pd.read_json(dataset_path / filename).dropna() for filename in filenames]
-    return jsons
+    datasets = [
+        Dataset.from_json(str(dataset_path / filename)) for filename in filenames
+    ]
+    return datasets
 
 
 def convert_dataframes_to_datasets(dataframes: list[pd.DataFrame]):
@@ -86,94 +88,10 @@ def plot_sentence_lengths_histogram(
     plt.show()
 
 
-def plot_correct_predictions_by_sentence_length(
-    sentences: list[str],
-    correctly_predicted: list[bool],
-    figure_path: Path,
-    figure_title: str,
-    divider: int,
-    min_threshold: int,
-    max_threshold: int,
-    x_label: str = "Words count per sentence",
-    y_label: str = "Correct predictions",
-):
-    # Create word count groups for x labels
-    word_count_groups = []
-    for sentence in sentences:
-        word_count = len(sentence.split())
-        num_word_count_group = int(word_count / divider) + 1
-        lower_group_boundary = divider * num_word_count_group - divider
-        upper_group_boundary = divider * num_word_count_group - 1
-        if (
-            min_threshold <= lower_group_boundary
-            and upper_group_boundary <= max_threshold
-        ):
-            word_count_group = f"{lower_group_boundary}-{upper_group_boundary}"
-            word_count_groups.append(word_count_group)
-
-    word_count_groups = list(dict.fromkeys(word_count_groups))
-    word_count_groups = sorted(
-        word_count_groups, key=lambda group: int(group.split("-")[0])
-    )
-
-    # Create dictionaries to store results
-    range_to_valid_predictions_count_dict = {
-        word_count_group: 0.0 for word_count_group in word_count_groups
-    }
-    range_to_element_count_dict = {
-        word_count_group: 0.0 for word_count_group in word_count_groups
-    }
-    range_to_pred_accuracy_dict = {
-        word_count_group: 0.0 for word_count_group in word_count_groups
-    }
-
-    # Manipulate dictionaries
-    for index, sentence in enumerate(sentences):
-        word_count = len(sentence.split())
-        num_word_count_group = int(word_count / divider) + 1
-        lower_group_boundary = divider * num_word_count_group - divider
-        upper_group_boundary = divider * num_word_count_group - 1
-        word_count_group = f"{lower_group_boundary}-{upper_group_boundary}"
-        is_sentence_correctly_predicted = correctly_predicted[index]
-
-        # Take the sentence into account if it is between min and max threshold
-        if word_count_group in word_count_groups:
-            range_to_element_count_dict[word_count_group] = (
-                range_to_element_count_dict[word_count_group] + 1
-            )
-
-            if is_sentence_correctly_predicted:
-                range_to_valid_predictions_count_dict[word_count_group] = (
-                    range_to_valid_predictions_count_dict[word_count_group] + 1
-                )
-
-    for key in range_to_pred_accuracy_dict.keys():
-        range_to_pred_accuracy_dict[key] = (
-            range_to_valid_predictions_count_dict[key]
-            / range_to_element_count_dict[key]
-        )
-
-    # Plot
-    plt.gca().yaxis.set_major_formatter(PercentFormatter(xmax=1.0))
-    plt.bar(
-        word_count_groups,
-        [value for value in range_to_pred_accuracy_dict.values()],
-        color="dimgray",
-    )
-    plt.title(figure_title)
-    plt.xlabel(x_label)
-    plt.ylabel(y_label)
-
-    _create_dirs_if_not_exists(figure_path.parent)
-
-    plt.savefig(figure_path)
-    plt.show()
-
-
 def convert_to_tf_dataset(
     hf_dataset: Dataset,
     columns: list[str],
-    label_cols: list[str],
+    label_cols: list[str] | None,
     collator,
     batch_size: int,
     shuffle: bool = False,
@@ -185,6 +103,7 @@ def convert_to_tf_dataset(
         batch_size=batch_size,
         shuffle=shuffle,
     )
+
 
 def prepare_tf_dataset(
     model,
@@ -201,13 +120,30 @@ def prepare_tf_dataset(
     )
 
 
+def get_best_epoch(
+    history: dict,
+    metric: str = "val_loss",
+    metric_evaluator: str = "min",
+):
+    allowed_metric_evaluators = ["min", "max"]
+
+    if metric_evaluator in allowed_metric_evaluators:
+        match metric_evaluator:
+            case "min":
+                return int(np.argmin(history[metric]) + 1)
+            case "max":
+                return int(np.argmax(history[metric]) + 1)
+            case _:
+                raise Exception("Wrong metric evaluator passed!")
+
+
 def get_best_model_from_checkpoints(
     trained_model: tf.keras.Model,
     history: dict,
     model_name: str,
     metric: str = "val_loss",
     remove_checkpoints: bool = True,
-    model_type: str = "extractive"
+    model_type: str = "extractive",
 ):
     best_epoch = int(np.argmin(history.history[metric]) + 1)
     if model_type == "extractive":
