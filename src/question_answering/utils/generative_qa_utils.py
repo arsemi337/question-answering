@@ -1,13 +1,11 @@
 import tensorflow as tf
-from transformers import TFAutoModelForSeq2SeqLM, BartTokenizerFast, DataCollatorForSeq2Seq
-from evaluate import load
-import sklearn.metrics as skmetrics
+from transformers import TFAutoModelForSeq2SeqLM, BartTokenizerFast
 import numpy as np
-from tqdm import tqdm
 import pandas as pd
 from pandas import DataFrame
 import evaluate
 from tqdm import tqdm
+from pathlib import Path
 
 from question_answering.paths import generative_qa_paths
 
@@ -220,20 +218,20 @@ def count_prediction_numbers_per_metric_range_for_specific_question_type(
 ):
     dataframes_dictionary = {}
     question_type_list = ['whats', 'wheres', 'hows', 'for_whats', 'whens', 'closed', 'others']
-    ranges_column = ['(0.0, 0.2)', '(0.2, 0.4)', '(0.4, 0.6)', '(0.6, 0.8)', '(0.8, 1.0)', 'sum']
+    ranges_column = ['(0.0, 0.2)', '(0.2, 0.4)', '(0.4, 0.6)', '(0.6, 0.8)', '(0.8, 1.0)']
     threshold_list = [-0.1, 0.2, 0.4, 0.6, 0.8, 1.1]
     metric_list = ['bleu', 'bleu1', 'bleu2', 'rouge1', 'rouge2', 'rougeL', 'meteor']
 
-    for type in question_type_list:
+    for question_type in question_type_list:
         predictions_for_question_type = dataframe_predictions_and_question_types.groupby(['question_type']).get_group(
-            type).drop('question_type', axis=1).reset_index(drop=True)
+            question_type).drop('question_type', axis=1).reset_index(drop=True)
         temp_dataframe = pd.DataFrame()
         temp_dataframe['ranges'] = ranges_column
         for metric in metric_list:
             temp_dataframe[metric] = pd.Series(predictions_for_question_type.groupby(
-                pd.cut(predictions_for_question_type[metric], threshold_list)).count()[metric].values)
+                pd.cut(predictions_for_question_type[metric], threshold_list), observed=False).count()[metric].values)
             dataframes_dictionary.update(
-                {type: temp_dataframe}
+                {question_type: temp_dataframe}
             )
 
     return dataframes_dictionary
@@ -303,3 +301,35 @@ def add_question_types_to_dataset_dataframe(
         )
 
     return dataset_predictions_dataframe
+
+
+def save_question_type_metrics_dictionary_to_csv(
+        model_evaluation_dir: Path, question_type_metrics_dictionary: pd.DataFrame
+):
+    question_type_list = ['whats', 'wheres', 'hows', 'for_whats', 'whens', 'closed', 'others']
+    save_path = model_evaluation_dir / "question_type_numbers"
+
+    for question_type in question_type_list:
+        if not save_path.exists():
+            save_path.mkdir(parents=True)
+        question_type_metrics_dictionary[question_type].to_csv(
+            save_path / f"question_type_numbers_{question_type}.csv",
+            index=True,
+            index_label="index",
+            escapechar="\\",
+        )
+
+
+def read_question_type_metrics_dictionary_from_csv(
+        model_evaluation_dir: Path
+):
+    dataframes_dictionary = {}
+    question_type_list = ['whats', 'wheres', 'hows', 'for_whats', 'whens', 'closed', 'others']
+    save_path = model_evaluation_dir / "question_type_numbers"
+
+    for question_type in question_type_list:
+        dataframes_dictionary.update(
+            {question_type: pd.read_csv(save_path / f"question_type_numbers_{question_type}.csv")}
+        )
+
+    return dataframes_dictionary
