@@ -205,3 +205,61 @@ def calculate_prediction_numbers_per_metric_range(
             )
 
     return prediction_numbers
+
+
+def count_prediction_numbers_per_metric_range_for_specific_question_type(
+        dataframe_predictions_and_question_types: pd.DataFrame
+):
+    dataframes_dictionary = {}
+    question_type_list = ['whats', 'wheres', 'hows', 'for_whats', 'whens', 'closed', 'others']
+    ranges_column = ['(0.0, 0.2)', '(0.2, 0.4)', '(0.4, 0.6)', '(0.6, 0.8)', '(0.8, 1.0)', 'sum']
+    threshold_list = [-0.1, 0.2, 0.4, 0.6, 0.8, 1.1]
+    metric_list = ['bleu', 'bleu1', 'bleu2', 'rouge1', 'rouge2', 'rougeL', 'meteor']
+
+    for type in question_type_list:
+        predictions_for_question_type = dataframe_predictions_and_question_types.groupby(['question_type']).get_group(
+            type).drop('question_type', axis=1).reset_index(drop=True)
+        temp_dataframe = pd.DataFrame()
+        temp_dataframe['ranges'] = ranges_column
+        for metric in metric_list:
+            temp_dataframe[metric] = pd.Series(predictions_for_question_type.groupby(
+                pd.cut(predictions_for_question_type[metric], threshold_list)).count()[metric].values)
+            dataframes_dictionary.update(
+                {type: temp_dataframe}
+            )
+
+    return dataframes_dictionary
+
+
+def get_closed_questions_split_according_to_answer_correctness(
+        dataframe: pd.DataFrame
+):
+    closed_questions_dataframes_dictionary = {}
+
+    rows_with_closed_questions = dataframe[
+        (dataframe['labels'] == 'Yes') |
+        (dataframe['labels'] == 'No')].reset_index(drop=True)
+    closed_questions_dataframes_dictionary.update(
+        {"closed_all": rows_with_closed_questions}
+    )
+
+    rows_with_closed_questions_correct_answers = rows_with_closed_questions[
+        (rows_with_closed_questions['labels'] == rows_with_closed_questions['predictions'])].reset_index(drop=True)
+    closed_questions_dataframes_dictionary.update(
+        {"closed_correct_answer": rows_with_closed_questions_correct_answers}
+    )
+
+    rows_with_closed_questions_wrong_answers = rows_with_closed_questions[
+        (rows_with_closed_questions['labels'] != rows_with_closed_questions['predictions'])].reset_index(drop=True)
+    closed_questions_dataframes_dictionary.update(
+        {"closed_wrong_answer": rows_with_closed_questions_wrong_answers}
+    )
+
+    rows_with_long_answers_for_closed_questions = rows_with_closed_questions[
+        (rows_with_closed_questions['labels'] != 'Yes') &
+        (rows_with_closed_questions['labels'] != 'No')].reset_index(drop=True)
+    closed_questions_dataframes_dictionary.update(
+        {"closed_long_answer": rows_with_long_answers_for_closed_questions}
+    )
+
+    return closed_questions_dataframes_dictionary
