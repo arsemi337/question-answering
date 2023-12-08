@@ -185,26 +185,34 @@ def calculate_meteor_for_each_sample(dataframe):
 
 
 def calculate_prediction_numbers_per_metric_range(
-        df, metric_name, thresholds
+        df, thresholds
 ):
-    prediction_numbers = []
+    lists_dictionary = {}
+    metric_list = ['bleu', 'bleu1', 'bleu2', 'rouge1', 'rouge2', 'rougeL', 'meteor']
 
-    for index, _ in enumerate(thresholds):
-        if index == (len(thresholds) - 1):
-            break
+    for metric in metric_list:
+        prediction_numbers = []
+        for index, _ in enumerate(thresholds):
+            if index == (len(thresholds) - 1):
+                break
 
-        if index == 0:
-            prediction_numbers.append(
-                len(df[(df[metric_name] >= thresholds[index]) &
-                       (df[metric_name] <= thresholds[index + 1])])
-            )
-        else:
-            prediction_numbers.append(
-                len(df[(df[metric_name] > thresholds[index]) &
-                       (df[metric_name] <= thresholds[index + 1])])
-            )
+            if index == 0:
+                prediction_numbers.append(
+                    len(df[(df[metric] >= thresholds[index]) &
+                           (df[metric] <= thresholds[index + 1])])
+                )
+            else:
+                prediction_numbers.append(
+                    len(df[(df[metric] > thresholds[index]) &
+                           (df[metric] <= thresholds[index + 1])])
+                )
 
-    return prediction_numbers
+        lists_dictionary.update(
+            {metric: prediction_numbers
+             }
+        )
+
+    return lists_dictionary
 
 
 def count_prediction_numbers_per_metric_range_for_specific_question_type(
