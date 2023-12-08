@@ -271,3 +271,35 @@ def get_closed_questions_split_according_to_answer_correctness(
     )
 
     return closed_questions_dataframes_dictionary
+
+
+def return_question_type(question: str, answer: str):
+    if question.startswith("What"):
+        return "whats"
+    elif question.startswith("Where"):
+        return "wheres"
+    elif question.startswith("How"):
+        return "hows"
+    elif question.startswith("For what"):
+        return "for_whats"
+    elif question.startswith("When"):
+        return "whens"
+    elif answer == "Yes" or answer == "No":
+        return "closed"
+    else:
+        return "others"
+
+
+def add_question_types_to_dataset_dataframe(
+        dataset_predictions_dataframe: pd.DataFrame
+):
+    default_type_values = ['others'] * len(dataset_predictions_dataframe)
+    dataset_predictions_dataframe['question_type'] = default_type_values
+
+    for i in dataset_predictions_dataframe.index:
+        dataset_predictions_dataframe.at[i, 'question_type'] = return_question_type(
+            question=dataset_predictions_dataframe['questions'][i],
+            answer=dataset_predictions_dataframe['labels'][i]
+        )
+
+    return dataset_predictions_dataframe
