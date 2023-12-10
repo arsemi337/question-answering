@@ -6,6 +6,8 @@ from pandas import DataFrame
 import evaluate
 from tqdm import tqdm
 from pathlib import Path
+from datasets import Dataset
+import matplotlib.pyplot as plt
 
 from question_answering.paths import generative_qa_paths
 
@@ -333,3 +335,57 @@ def read_question_type_metrics_dictionary_from_csv(
         )
 
     return dataframes_dictionary
+
+
+def count_questions_per_question_type(
+        dataset: Dataset
+):
+    question_numbers_per_type = {}
+    question_type_list = ['what', 'where', 'how', 'for what', 'when']
+    sum = 0
+    for question_type in question_type_list:
+        questions = dataset['questions']
+        questions = [question.lower() for question in questions]
+
+        questions_number = len(list(filter(lambda x: x.startswith(question_type), questions)))
+        sum = sum + questions_number
+        question_numbers_per_type.update({
+            question_type: questions_number
+        })
+
+    rows_with_closed_questions = dataset.filter(
+        lambda row: row['answers'] == 'Yes' or row['answers'] == 'No'
+    )
+    closed_questions_number = len(rows_with_closed_questions)
+    sum = sum + closed_questions_number
+    question_numbers_per_type.update({
+        'closed': closed_questions_number
+    })
+
+    others_number = len(dataset) - sum
+    question_numbers_per_type.update({
+        'others': others_number
+    })
+
+    return question_numbers_per_type
+
+
+def plot_question_type_diagram(
+        question_numbers_per_type: dict,
+        figure_path: Path,
+        x_label: str = "Questions count per type",
+        y_label: str = "Questions types",
+):
+    names = list(question_numbers_per_type.keys())
+    values = list(question_numbers_per_type.values())
+
+    plt.bar(range(len(question_numbers_per_type)), values, tick_label=names, color="dimgray")
+    plt.title("Questions number per questions type")
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
+
+    if not figure_path.parent.is_dir():
+        figure_path.parent.mkdir(parents=True)
+
+    plt.savefig(figure_path)
+    plt.show()
