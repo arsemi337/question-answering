@@ -184,7 +184,7 @@ def calculate_meteor_for_each_sample(dataframe):
     return dataframe
 
 
-def calculate_prediction_numbers_per_metric_range(
+def calculate_prediction_counts_per_metric_range(
         df, thresholds
 ):
     lists_dictionary = {}
@@ -379,13 +379,54 @@ def plot_question_type_diagram(
     names = list(question_numbers_per_type.keys())
     values = list(question_numbers_per_type.values())
 
-    plt.bar(range(len(question_numbers_per_type)), values, tick_label=names, color="dimgray")
-    plt.title("Questions number per questions type")
+    diagram = plt.bar(range(len(question_numbers_per_type)), values, tick_label=names, color="dimgray")
+    plt.title("Questions count per questions type")
     plt.xlabel(x_label)
     plt.ylabel(y_label)
+
+    for rect1 in diagram:
+        value = round(rect1.get_height() / sum(values) * 100, 1)
+        height = rect1.get_height()
+        plt.annotate("{}%".format(value), (rect1.get_x() + rect1.get_width() / 2, height), ha="center",
+                     va="bottom", fontsize=10)
 
     if not figure_path.parent.is_dir():
         figure_path.parent.mkdir(parents=True)
 
     plt.savefig(figure_path)
     plt.show()
+
+
+def plot_prediction_counts_per_metric_range_diagrams(
+        prediction_counts_per_metric: dict,
+        thresholds: list,
+        x_label: str = "Questions count per range",
+        y_label: str = "Threshold ranges",
+):
+    names = []
+    for index, _ in enumerate(thresholds):
+        if index == len(thresholds) - 1:
+            continue
+        names.append(f'({thresholds[index]}, {thresholds[index + 1]})')
+
+    for key, value in prediction_counts_per_metric.items():
+        values = value
+
+        diagram = plt.bar(names, values, color="dimgray")
+        plt.title(f"{key} - prediction counts per metric range")
+        plt.xlabel(x_label)
+        plt.ylabel(y_label)
+
+        for rect1 in diagram:
+            value = round(rect1.get_height() / sum(values) * 100, 1)
+            height = rect1.get_height()
+            plt.annotate("{}%".format(value), (rect1.get_x() + rect1.get_width() / 2, height), ha="center", va="bottom",
+                         fontsize=10)
+
+        figure_path = generative_qa_paths.general_figures_dir / f"{key}_prediction_counts_per_metric_range_diagram.png"
+
+        if not figure_path.parent.is_dir():
+            figure_path.parent.mkdir(parents=True)
+
+        plt.savefig(figure_path)
+        plt.show()
