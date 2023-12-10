@@ -379,7 +379,7 @@ def plot_question_type_diagram(
     names = list(question_numbers_per_type.keys())
     values = list(question_numbers_per_type.values())
 
-    diagram = plt.bar(range(len(question_numbers_per_type)), values, tick_label=names, color="dimgray")
+    diagram = plt.bar(range(len(question_numbers_per_type)), values, tick_label=names, color="dimgray", zorder=3)
     plt.title("Questions count per questions type")
     plt.xlabel(x_label)
     plt.ylabel(y_label)
@@ -393,6 +393,7 @@ def plot_question_type_diagram(
     if not figure_path.parent.is_dir():
         figure_path.parent.mkdir(parents=True)
 
+    plt.grid(axis='y')
     plt.savefig(figure_path)
     plt.show()
 
@@ -400,6 +401,7 @@ def plot_question_type_diagram(
 def plot_prediction_counts_per_metric_range_diagrams(
         prediction_counts_per_metric: dict,
         thresholds: list,
+        figure_directory_path: Path,
         x_label: str = "Questions count per range",
         y_label: str = "Threshold ranges",
 ):
@@ -412,7 +414,7 @@ def plot_prediction_counts_per_metric_range_diagrams(
     for key, value in prediction_counts_per_metric.items():
         values = value
 
-        diagram = plt.bar(names, values, color="dimgray")
+        diagram = plt.bar(names, values, color="dimgray", zorder=3)
         plt.title(f"{key} - prediction counts per metric range")
         plt.xlabel(x_label)
         plt.ylabel(y_label)
@@ -423,10 +425,56 @@ def plot_prediction_counts_per_metric_range_diagrams(
             plt.annotate("{}%".format(value), (rect1.get_x() + rect1.get_width() / 2, height), ha="center", va="bottom",
                          fontsize=10)
 
-        figure_path = generative_qa_paths.general_figures_dir / f"{key}_prediction_counts_per_metric_range_diagram.png"
+        figure_path = figure_directory_path / 'figures' / 'counts-per-metric-range' / f"{key}_prediction_counts_per_metric_range_diagram.png"
 
         if not figure_path.parent.is_dir():
             figure_path.parent.mkdir(parents=True)
 
+        plt.grid(axis='y')
+        plt.savefig(figure_path)
+        plt.show()
+
+
+def plot_prediction_metrics_per_question_type_diagram(
+        metric_mean_values_dataframe: dict,
+        figure_directory_path: Path,
+        x_label: str = "Questions type",
+        y_label: str = "Metric value",
+):
+    question_type_list = []
+    metric_list = []
+    prediction_metrics_list = []
+
+    for column in metric_mean_values_dataframe:
+        column_object = metric_mean_values_dataframe[column]
+
+        if column == 'question_type':
+            question_type_list = column_object.values
+        else:
+            metric_list.append(column)
+            prediction_metrics_list.append(column_object.values)
+
+    for index, metric in enumerate(metric_list):
+        names = question_type_list
+        values = prediction_metrics_list[index]
+
+        diagram = plt.bar(names, values, color="dimgray", zorder=3)
+        plt.ylim([0.0, 1.0])
+        plt.title(f"{metric} - prediction metrics per question type")
+        plt.xlabel(x_label)
+        plt.ylabel(y_label)
+
+        for rect1 in diagram:
+            value = round(rect1.get_height(), 4)
+            height = rect1.get_height()
+            plt.annotate("{}%".format(value), (rect1.get_x() + rect1.get_width() / 2, height), ha="center", va="bottom",
+                         fontsize=10)
+
+        figure_path = figure_directory_path / f"{metric}_prediction_metrics_per_question_type_diagram.png"
+
+        if not figure_path.parent.is_dir():
+            figure_path.parent.mkdir(parents=True)
+
+        plt.grid(axis='y', zorder=0)
         plt.savefig(figure_path)
         plt.show()
