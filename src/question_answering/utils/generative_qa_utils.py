@@ -436,7 +436,7 @@ def plot_prediction_counts_per_metric_range_diagrams(
 
 
 def plot_prediction_metrics_per_question_type_diagram(
-        metric_mean_values_dataframe: dict,
+        metric_mean_values_dataframe: pd.DataFrame,
         figure_directory_path: Path,
         x_label: str = "Questions type",
         y_label: str = "Metric value",
@@ -478,3 +478,52 @@ def plot_prediction_metrics_per_question_type_diagram(
         plt.grid(axis='y', zorder=0)
         plt.savefig(figure_path)
         plt.show()
+
+
+def plot_prediction_counts_per_metric_range_per_question_type_diagram(
+        question_type_metrics_dictionary: dict,
+        figure_directory_path: Path,
+        x_label: str = "Questions count per range",
+        y_label: str = "Threshold ranges",
+):
+    threshold_ranges = []
+    metric_list = []
+    prediction_metrics_list = []
+
+    for question_type, question_type_metrics_dataframe in question_type_metrics_dictionary.items():
+        if 'index' in question_type_metrics_dataframe:
+            question_type_metrics_dataframe = question_type_metrics_dataframe.drop(['index'], axis=1)
+
+        for column in question_type_metrics_dataframe:
+            column_object = question_type_metrics_dataframe[column]
+
+            if column == 'ranges':
+                threshold_ranges = column_object.values
+            else:
+                metric_list.append(column)
+                prediction_metrics_list.append(column_object.values)
+
+        for index, metric in enumerate(metric_list):
+            names = threshold_ranges
+            values = prediction_metrics_list[index]
+
+            diagram = plt.bar(names, values, color="dimgray", zorder=3)
+            plt.title(f"{metric} - prediction metrics per question type")
+            plt.xlabel(x_label)
+            plt.ylabel(y_label)
+
+            for rect1 in diagram:
+                value = round(rect1.get_height() / sum(values) * 100, 1)
+                height = rect1.get_height()
+                plt.annotate("{}%".format(value), (rect1.get_x() + rect1.get_width() / 2, height), ha="center",
+                             va="bottom",
+                             fontsize=10)
+
+            figure_path = figure_directory_path / question_type / f"{metric}_prediction_counts_per_metric_per_question_type_diagram.png"
+
+            if not figure_path.parent.is_dir():
+                figure_path.parent.mkdir(parents=True)
+
+            plt.grid(axis='y', zorder=0)
+            plt.savefig(figure_path)
+            plt.close()
