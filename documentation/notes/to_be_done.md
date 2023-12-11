@@ -7,6 +7,12 @@
 
 ### This semester
 - Train BERT on medical data
+- Hyperparameter tuning: `{
+  "per_gpu_batch_size": [16, 32],
+  "learning_rate": [2e-5, 3e-5, 5e-5],
+  "num_epochs": [2, 3, 4]
+  }`
+- 
 
 ### Next semester?
 
