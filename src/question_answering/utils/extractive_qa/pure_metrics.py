@@ -7,6 +7,51 @@ from .__helpers import (
 )
 
 
+def calculate_pure_metrics_stats(
+        start_actual: list[int],
+        end_actual: list[int],
+        start_preds: list[int],
+        end_preds: list[int],
+):
+    length = ensure_same_sizes(start_actual, end_actual, start_preds, end_preds)
+
+    count_of_no_answer_predictions = 0
+    count_of_start_after_end_predictions = 0
+    count_of_good_no_answer_predictions = 0
+    count_of_good_predictions = 0
+    count_of_bad_predictions = 0
+
+    for i in range(length):
+        sample_start_actual = start_actual[i]
+        sample_end_actual = end_actual[i]
+        start_pred = start_preds[i]
+        end_pred = end_preds[i]
+
+        if start_pred == 0 and end_pred == 0:
+            count_of_no_answer_predictions += 1
+        elif start_pred > end_pred:
+            count_of_start_after_end_predictions += 1
+
+        if start_pred != sample_start_actual or end_pred != sample_end_actual:
+            count_of_bad_predictions += 1
+
+        if start_pred == sample_start_actual and end_pred == sample_end_actual:
+            count_of_good_predictions += 1
+
+            if start_pred == 0 and end_pred == 0:
+                count_of_good_no_answer_predictions += 1
+
+    return {
+        "count_of_no_answer_predictions": count_of_no_answer_predictions,
+        "count_of_start_after_end_predictions": count_of_start_after_end_predictions,
+        "count_of_good_no_answer_predictions": count_of_good_no_answer_predictions,
+        "count_of_bad_no_answer_predictions": count_of_no_answer_predictions - count_of_good_no_answer_predictions,
+        "count_of_bad_predictions": count_of_bad_predictions,
+        "count_of_good_predictions": count_of_good_predictions,
+        "total_predictions": length
+    }
+
+
 def calculate_pure_accuracies(
     start_actual: list[int],
     end_actual: list[int],
