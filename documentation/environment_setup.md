@@ -34,3 +34,7 @@ To install ***libmamba-solver*** run:
 `> conda config --set solver libmamba`
 
 After performing these steps creating and updating the  conda environment should be way quicker.
+
+For T5 model:
+
+`> conda install -c nvidia cuda-nvcc`
