@@ -1,33 +1,33 @@
 {
     "test_set": {
         "bleu": {
-            "bleu": 0.08502296729513548,
-            "brevity_penalty": 0.6002905042497846,
-            "length_ratio": 0.6621018859065655,
+            "bleu": 0.07657378760327928,
+            "brevity_penalty": 0.5826344811300292,
+            "length_ratio": 0.6492683308553094,
             "precisions": [
-                0.41980853327029904,
-                0.16020628847113624,
-                0.09274703057872126,
-                0.06451612903225806
+                0.42364710136193806,
+                0.16110826064648537,
+                0.08638049814520403,
+                0.05060553633217993
             ],
             "reference_length": 12779,
-            "translation_length": 8461
+            "translation_length": 8297
         },
         "closed_questions": {
             "closed_questions_number": 135,
-            "correct_answers_number": 104,
+            "correct_answers_number": 101,
             "long_answers_for_closed_questions_number": 0,
-            "wrong_answers_number": 31
+            "wrong_answers_number": 34
         },
-        "loss": 2.608250617980957,
+        "loss": 2.567275047302246,
         "meteor": {
-            "meteor": 0.23075570505699536
+            "meteor": 0.2283746575220056
         },
         "rogue": {
-            "rouge1": 0.3545366954452255,
-            "rouge2": 0.10561054275438815,
-            "rougeL": 0.34371745210648375,
-            "rougeLsum": 0.3440469456718286
+            "rouge1": 0.35201811488792345,
+            "rouge2": 0.106126758904767,
+            "rougeL": 0.342137391892804,
+            "rougeLsum": 0.34200654936797026
         }
     },
     "training": {
@@ -36,11 +36,11 @@
         "gpu": "NVIDIA GeForce RTX 4070",
         "metrics": {
             "loss": [
-                2.7350661754608154,
-                2.0263431072235107,
-                1.617146372795105
+                2.767595052719116,
+                2.1803524494171143,
+                1.8757147789001465
             ]
         },
-        "training_time": 3050.8253117999993
+        "training_time": 2856.455812700093
     }
 }
