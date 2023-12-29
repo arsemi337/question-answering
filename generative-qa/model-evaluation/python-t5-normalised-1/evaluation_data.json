@@ -1,0 +1,46 @@
+{
+    "test_set": {
+        "bleu": {
+            "bleu": 0.06145442866551483,
+            "brevity_penalty": 0.6096712884587541,
+            "length_ratio": 0.6689700024388261,
+            "precisions": [
+                0.3970105723660226,
+                0.12971496842464583,
+                0.06061415220293725,
+                0.03307223672758921
+            ],
+            "reference_length": 12301,
+            "translation_length": 8229
+        },
+        "closed_questions": {
+            "closed_questions_number": 131,
+            "correct_answers_number": 102,
+            "long_answers_for_closed_questions_number": 0,
+            "wrong_answers_number": 29
+        },
+        "loss": 2.4487175941467285,
+        "meteor": {
+            "meteor": 0.2204161467108625
+        },
+        "rogue": {
+            "rouge1": 0.3477144102459999,
+            "rouge2": 0.09496936575154909,
+            "rougeL": 0.3382429864555641,
+            "rougeLsum": 0.33785195711991245
+        }
+    },
+    "training": {
+        "attempted_epochs": 3,
+        "best_epoch": 3,
+        "gpu": "NVIDIA GeForce RTX 4070",
+        "metrics": {
+            "loss": [
+                2.753148078918457,
+                2.417311191558838,
+                2.2980122566223145
+            ]
+        },
+        "training_time": 3874.0598862000043
+    }
+}
