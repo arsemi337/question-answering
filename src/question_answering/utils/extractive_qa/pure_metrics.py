@@ -7,11 +7,67 @@ from .__helpers import (
 )
 
 
+def calculate_pure_metrics_stats(
+        start_actual: list[int],
+        end_actual: list[int],
+        start_preds: list[int],
+        end_preds: list[int],
+):
+    length = ensure_same_sizes(start_actual, end_actual, start_preds, end_preds)
+
+    count_of_no_answer_actuals = 0
+    count_of_normal_actuals = 0
+    count_of_no_answer_predictions = 0
+    count_of_start_after_end_predictions = 0
+    count_of_good_no_answer_predictions = 0
+    count_of_good_predictions = 0
+    count_of_bad_predictions = 0
+
+    for i in range(length):
+        sample_start_actual = start_actual[i]
+        sample_end_actual = end_actual[i]
+        start_pred = start_preds[i]
+        end_pred = end_preds[i]
+
+        # Actuals
+        if sample_start_actual == 0 and sample_end_actual == 0:
+            count_of_no_answer_actuals += 1
+        else:
+            count_of_normal_actuals += 1
+
+        # Predictions
+        if start_pred == 0 and end_pred == 0:
+            count_of_no_answer_predictions += 1
+        elif start_pred > end_pred:
+            count_of_start_after_end_predictions += 1
+
+        if start_pred != sample_start_actual or end_pred != sample_end_actual:
+            count_of_bad_predictions += 1
+
+        if start_pred == sample_start_actual and end_pred == sample_end_actual:
+            count_of_good_predictions += 1
+
+            if start_pred == 0 and end_pred == 0:
+                count_of_good_no_answer_predictions += 1
+
+    return {
+        "count_of_no_answer_actuals": count_of_no_answer_actuals,
+        "count_of_normal_actuals": count_of_normal_actuals,
+        "count_of_no_answer_predictions": count_of_no_answer_predictions,
+        "count_of_start_after_end_predictions": count_of_start_after_end_predictions,
+        "count_of_good_no_answer_predictions": count_of_good_no_answer_predictions,
+        "count_of_bad_no_answer_predictions": count_of_no_answer_predictions - count_of_good_no_answer_predictions,
+        "count_of_bad_predictions": count_of_bad_predictions,
+        "count_of_good_predictions": count_of_good_predictions,
+        "total_predictions": length
+    }
+
+
 def calculate_pure_accuracies(
-    start_actual: list[int],
-    end_actual: list[int],
-    start_preds: list[int],
-    end_preds: list[int],
+        start_actual: list[int],
+        end_actual: list[int],
+        start_preds: list[int],
+        end_preds: list[int],
 ):
     length = ensure_same_sizes(start_actual, end_actual, start_preds, end_preds)
 
@@ -45,7 +101,7 @@ def calculate_pure_accuracies(
 
 
 def calculate_pure_qa_metrics(
-    answers: list[str], predicted_texts: list[str], normalize: bool
+        answers: list[str], predicted_texts: list[str], normalize: bool
 ):
     length = ensure_same_sizes(answers, predicted_texts)
     precision_metric = 0.0
@@ -79,7 +135,7 @@ def calculate_pure_qa_metrics(
 
 
 def get_is_correctly_predicted(
-    answers: list[str], predicted_texts: list[str], normalize: bool
+        answers: list[str], predicted_texts: list[str], normalize: bool
 ):
     length = ensure_same_sizes(answers, predicted_texts)
     is_correctly_predicted = []
