@@ -1,0 +1,72 @@
+{
+    "accuracy": {
+        "end_accuracy": 0.0918455762010205,
+        "full_accuracy": 0.03812457880042361,
+        "start_accuracy": 0.10946375276788294
+    },
+    "exact_match": {
+        "01_best_normalized": 0.043519394512771994,
+        "01_best_standard": 0.03755912961210974,
+        "02_best_normalized": 0.05250709555345317,
+        "02_best_standard": 0.043614001892147584,
+        "03_best_normalized": 0.0554399243140965,
+        "03_best_standard": 0.04522232734153264,
+        "05_best_normalized": 0.056575212866603594,
+        "05_best_standard": 0.04588457899716178,
+        "10_best_normalized": 0.05581835383159887,
+        "10_best_standard": 0.04541154210028382,
+        "20_best_normalized": 0.05591296121097446,
+        "20_best_standard": 0.04541154210028382
+    },
+    "f1": {
+        "01_best_normalized": 0.10124194498293107,
+        "01_best_standard": 0.09734866798897544,
+        "02_best_normalized": 0.13690832608012132,
+        "02_best_standard": 0.13006373593671963,
+        "03_best_normalized": 0.15025496842912323,
+        "03_best_standard": 0.14211814963969116,
+        "05_best_normalized": 0.15539765571140315,
+        "05_best_standard": 0.14726493444704986,
+        "10_best_normalized": 0.15454640090886318,
+        "10_best_standard": 0.14686229954382773,
+        "20_best_normalized": 0.15451578189054313,
+        "20_best_standard": 0.1467948677470646
+    },
+    "metric_stats": {
+        "count_of_bad_no_answer_predictions": 0,
+        "count_of_bad_predictions": 9965,
+        "count_of_good_no_answer_predictions": 0,
+        "count_of_good_predictions": 422,
+        "count_of_no_answer_predictions": 0,
+        "count_of_start_after_end_predictions": 1027,
+        "total_predictions": 10387
+    },
+    "precision": {
+        "01_best_normalized": 0.08665800662959337,
+        "01_best_standard": 0.08359536707093469,
+        "02_best_normalized": 0.11519561154630792,
+        "02_best_standard": 0.10982768335602551,
+        "03_best_normalized": 0.125775777209808,
+        "03_best_standard": 0.11943658572529063,
+        "05_best_normalized": 0.13017171877548234,
+        "05_best_standard": 0.12366410532439794,
+        "10_best_normalized": 0.12948329581262755,
+        "10_best_standard": 0.12333080181670787,
+        "20_best_normalized": 0.12948038766562403,
+        "20_best_standard": 0.12330919024524017
+    },
+    "recall": {
+        "01_best_normalized": 0.1835400799114077,
+        "01_best_standard": 0.1750908696277372,
+        "02_best_normalized": 0.2630210558043395,
+        "02_best_standard": 0.24762247350115818,
+        "03_best_normalized": 0.29417866183615476,
+        "03_best_standard": 0.27524527860080894,
+        "05_best_normalized": 0.30412553716501844,
+        "05_best_standard": 0.28599211349481696,
+        "10_best_normalized": 0.30240409522681444,
+        "10_best_standard": 0.2849532157269693,
+        "20_best_normalized": 0.30204888752061326,
+        "20_best_standard": 0.28454493117015117
+    }
+}

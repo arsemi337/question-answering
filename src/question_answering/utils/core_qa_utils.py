@@ -178,7 +178,8 @@ def plot_and_save_fig_from_history(
     figure_filename: str,
 ):
     for attribute in attributes:
-        plt.plot(history[attribute])
+        metric = history[attribute]
+        plt.plot(range(1, len(metric) + 1), metric)
 
     plt.gca().yaxis.set_major_locator(MaxNLocator(integer=True))
     plt.title(title)
